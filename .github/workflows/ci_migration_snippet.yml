@@ -1,0 +1,13 @@
+- name: Run DB migrations (if Alembic/Django detected)
+  working-directory: ./backend
+  run: |
+    if [ -f alembic.ini ] || [ -d alembic ]; then
+      python -m pip install alembic
+      alembic upgrade head || true
+    elif [ -d migrations ]; then
+      echo "Django migrations detected; consider manage.py migrate in deployment."
+    else
+      echo "No migration tooling detected."
+    fi
+  env:
+    DATABASE_URL: ${{ secrets.DATABASE_URL }}
