@@ -1,0 +1,33 @@
+:root{
+  --bg:#0b1220;
+  --card:#0f1726;
+  --accent:#60a5fa;
+  --muted:#94a3b8;
+  --glass: rgba(255,255,255,0.03);
+  --radius:12px;
+  --gap:12px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;background:linear-gradient(180deg,#071029,var(--bg));color:#e6eef8}
+.wrap{max-width:900px;margin:36px auto;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+.header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.header h1{margin:0;font-size:20px;color:var(--accent)}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.toggle{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:14px}
+.toggle input{width:16px;height:16px}
+.add{display:flex;gap:8px;align-items:center}
+.add input{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;min-width:220px}
+.add button, #preset-select{padding:8px 10px;border-radius:8px;border:0;background:linear-gradient(90deg,var(--accent),#3b82f6);color:#001;font-weight:700;cursor:pointer}
+#preset-select{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);font-weight:400;padding:8px;border-radius:8px}
+
+.clocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.clock{background:var(--card);padding:12px;border-radius:10px;border:1px solid var(--glass);display:flex;flex-direction:column;gap:6px}
+.clock .zone{font-weight:700;color:var(--accent);display:flex;justify-content:space-between;align-items:center}
+.clock .time{font-size:1.4rem;font-weight:700}
+.clock .date{font-size:0.85rem;color:var(--muted)}
+.actions{display:flex;gap:8px;margin-left:6px}
+.btn{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:6px 8px;border-radius:8px;cursor:pointer;font-size:0.9rem}
+.remove{background:#ff6b6b;color:#110; border:0;padding:6px 8px;border-radius:8px}
+.footer{margin-top:14px;color:var(--muted);font-size:13px;text-align:center}
+@media (max-width:520px){.add input{min-width:140px;width:100%}.controls{flex-direction:column;align-items:stretch}}
