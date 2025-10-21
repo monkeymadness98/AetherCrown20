@@ -74,13 +74,66 @@ Once the server is running, visit:
 
 ## Deployment
 
+### GitHub Pages Deployment
+
+The Futuristic Todo 2030 UI can be deployed to GitHub Pages for free hosting:
+
+#### Enable GitHub Pages
+
+1. Go to your repository on GitHub
+2. Click on **Settings** > **Pages** (in the left sidebar)
+3. Under **Source**, select the branch you want to deploy (e.g., `main` or `chore/add-ui-features`)
+4. Select **/ (root)** as the folder
+5. Click **Save**
+6. GitHub will provide you with a URL where your site is published (usually `https://<username>.github.io/<repository-name>/`)
+
+#### Local Development Server
+
+To test the Todo application locally before deploying:
+
+**Option 1: Using Python's built-in HTTP server**
+```bash
+# Navigate to the repository root
+cd AetherCrown20
+
+# Start a local server on port 8000
+python3 -m http.server 8000
+```
+
+**Option 2: Using Node.js http-server**
+```bash
+# Install http-server globally (one-time setup)
+npm install -g http-server
+
+# Navigate to the repository root
+cd AetherCrown20
+
+# Start the server
+http-server -p 8000
+```
+
+**Option 3: Using VS Code Live Server Extension**
+- Install the "Live Server" extension in VS Code
+- Right-click on `index.html` and select "Open with Live Server"
+
+Once the server is running, open your browser and navigate to:
+- `http://localhost:8000` (or the port you specified)
+
+The Todo application will load with all its features including:
+- ✨ Futuristic neon/glassmorphism UI
+- 📅 Due dates for tasks
+- 🏷️ Tags for organization
+- 💾 localStorage persistence (data saved in your browser)
+- 🔄 Drag and drop to reorder tasks
+- 🔍 Filters (All, Active, Completed, Overdue)
+
 ### Render Deployment
 
-The application is configured for automatic deployment to Render via GitHub Actions.
+The backend application is configured for automatic deployment to Render via GitHub Actions.
 
 ### Vercel Deployment
 
-Frontend deployment to Vercel is handled through the CI/CD pipeline.
+Backend deployment to Vercel is handled through the CI/CD pipeline.
 
 ## CI/CD
 
@@ -143,3 +196,9 @@ pytest
 ## Support
 
 For issues and questions, please open an issue on GitHub.
+
+---
+
+## Todo App
+
+The repository now includes a **Futuristic Todo 2030** application with neon/glassmorphism UI design. See the deployment section above for instructions on how to deploy to GitHub Pages or run locally.
