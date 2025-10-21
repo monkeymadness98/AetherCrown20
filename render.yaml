@@ -1,0 +1,30 @@
+services:
+  # Backend API Service
+  - type: web
+    name: aethercrown20-backend
+    env: python
+    region: oregon
+    buildCommand: cd backend && pip install -r requirements.txt
+    startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PORT
+        value: 8000
+      - key: PYTHON_VERSION
+        value: 3.11.0
+    autoDeploy: true
+
+  # Cron Job for Empire Automation
+  - type: cron
+    name: aethercrown20-automation
+    env: python
+    schedule: "0 */6 * * *"  # Run every 6 hours
+    buildCommand: cd backend && pip install -r requirements.txt
+    startCommand: cd backend && python empire_automation.py
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.11.0
