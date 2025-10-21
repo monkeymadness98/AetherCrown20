@@ -75,6 +75,27 @@ jobs:
         run: |
           git push --force-with-lease https://x-access-token:${GH_PAT}@github.com/${{ github.repository }} pr-branch:${{ github.event.inputs.target_pr }}
 
+  frontend-build:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.17.0'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
   deploy-render-vercel:
     name: Deploy Backend & Frontend
     runs-on: ubuntu-latest
