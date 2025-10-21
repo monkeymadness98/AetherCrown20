@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Todo 2030</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="container">
+        <header>
+            <h1 class="title">
+                <span class="glow">⚡</span>
+                Todo 2030
+                <span class="glow">⚡</span>
+            </h1>
+            <p class="subtitle">Quantum Task Management System</p>
+        </header>
+
+        <div class="input-section glass">
+            <form id="todo-form">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="todo-input" 
+                        placeholder="Enter a new task..." 
+                        required
+                        autocomplete="off"
+                    >
+                </div>
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="due-date">Due Date</label>
+                        <input 
+                            type="date" 
+                            id="due-date"
+                        >
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="tags-input">Tags</label>
+                        <input 
+                            type="text" 
+                            id="tags-input" 
+                            placeholder="work, personal, urgent..."
+                            autocomplete="off"
+                        >
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-add">
+                    <span>+</span> Add Task
+                </button>
+            </form>
+        </div>
+
+        <div class="filters glass">
+            <button class="filter-btn active" data-filter="all">
+                All <span class="count" id="count-all">0</span>
+            </button>
+            <button class="filter-btn" data-filter="active">
+                Active <span class="count" id="count-active">0</span>
+            </button>
+            <button class="filter-btn" data-filter="completed">
+                Completed <span class="count" id="count-completed">0</span>
+            </button>
+            <button class="filter-btn" data-filter="overdue">
+                Overdue <span class="count" id="count-overdue">0</span>
+            </button>
+        </div>
+
+        <div class="todo-list" id="todo-list">
+            <!-- Tasks will be dynamically inserted here -->
+        </div>
+
+        <div class="footer">
+            <button class="btn-clear" id="clear-completed">
+                Clear Completed
+            </button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

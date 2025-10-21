@@ -1,0 +1,593 @@
+/* Futuristic Neon / Glassmorphism Todo 2030 */
+
+:root {
+    --primary-neon: #00f3ff;
+    --secondary-neon: #ff00ff;
+    --accent-neon: #39ff14;
+    --bg-dark: #0a0e27;
+    --bg-card: rgba(15, 20, 40, 0.7);
+    --text-primary: #ffffff;
+    --text-secondary: #a8b2d1;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --shadow-glow: 0 0 20px rgba(0, 243, 255, 0.3);
+    --shadow-glow-pink: 0 0 20px rgba(255, 0, 255, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Orbitron', sans-serif;
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1419 100%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Animated starfield background */
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.stars::before,
+.stars::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    box-shadow: 
+        100px 200px white, 300px 100px white, 500px 300px white,
+        700px 150px white, 900px 400px white, 200px 500px white,
+        400px 50px white, 600px 450px white, 800px 250px white,
+        150px 350px white, 350px 150px white, 550px 50px white,
+        750px 350px white, 950px 150px white, 250px 250px white,
+        450px 450px white, 650px 200px white, 850px 500px white,
+        50px 100px white, 1000px 300px white, 1200px 100px white,
+        1400px 400px white, 100px 600px white, 300px 450px white,
+        500px 150px white, 700px 550px white, 900px 50px white;
+    animation: twinkle 3s infinite;
+}
+
+.stars::after {
+    animation-delay: 1.5s;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+/* Container */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeInDown 0.8s ease;
+}
+
+.title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--primary-neon) 0%, var(--secondary-neon) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.1em;
+}
+
+.glow {
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px var(--primary-neon));
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.2); opacity: 1; }
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+}
+
+/* Glassmorphism effect */
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: var(--shadow-glow);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+.glass:hover {
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Input Section */
+.input-section {
+    animation: fadeInUp 0.8s ease 0.2s both;
+}
+
+#todo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+label {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+input[type="text"],
+input[type="date"] {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus {
+    border-color: var(--primary-neon);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+/* Buttons */
+.btn-add {
+    background: linear-gradient(135deg, var(--primary-neon) 0%, var(--secondary-neon) 100%);
+    color: var(--bg-dark);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+}
+
+.btn-add:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.8);
+}
+
+.btn-add:active {
+    transform: translateY(0);
+}
+
+.btn-add span {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+/* Filters */
+.filters {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    animation: fadeInUp 0.8s ease 0.4s both;
+    padding: 1.5rem;
+}
+
+.filter-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.filter-btn:hover::before {
+    left: 100%;
+}
+
+.filter-btn:hover {
+    border-color: var(--primary-neon);
+    color: var(--primary-neon);
+    transform: translateY(-2px);
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, rgba(0, 243, 255, 0.2) 0%, rgba(255, 0, 255, 0.2) 100%);
+    border-color: var(--primary-neon);
+    color: var(--primary-neon);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+}
+
+.count {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+}
+
+/* Todo List */
+.todo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    animation: fadeInUp 0.8s ease 0.6s both;
+    min-height: 200px;
+}
+
+.todo-item {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    animation: slideIn 0.3s ease;
+    cursor: move;
+}
+
+.todo-item:hover {
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+    transform: translateX(5px);
+    border-color: var(--primary-neon);
+}
+
+.todo-item.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+.todo-item.completed {
+    opacity: 0.6;
+    border-color: var(--accent-neon);
+}
+
+.todo-item.completed .todo-content {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+}
+
+.todo-item.overdue:not(.completed) {
+    border-color: #ff0055;
+    background: rgba(255, 0, 85, 0.05);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.checkbox-wrapper {
+    flex-shrink: 0;
+}
+
+.checkbox {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--primary-neon);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.checkbox:hover {
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+    transform: scale(1.1);
+}
+
+.checkbox.checked {
+    background: var(--primary-neon);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.8);
+}
+
+.checkbox.checked::after {
+    content: '✓';
+    color: var(--bg-dark);
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.todo-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.todo-content {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+    word-break: break-word;
+}
+
+.todo-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.25rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.due-date {
+    color: var(--primary-neon);
+}
+
+.overdue-label {
+    color: #ff0055;
+    font-weight: 700;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag {
+    background: linear-gradient(135deg, rgba(0, 243, 255, 0.2) 0%, rgba(255, 0, 255, 0.2) 100%);
+    border: 1px solid var(--primary-neon);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.delete-btn {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border: 2px solid rgba(255, 0, 85, 0.5);
+    background: transparent;
+    border-radius: 50%;
+    color: #ff0055;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-btn:hover {
+    background: #ff0055;
+    color: white;
+    box-shadow: 0 0 15px rgba(255, 0, 85, 0.5);
+    transform: rotate(90deg) scale(1.1);
+}
+
+/* Footer */
+.footer {
+    margin-top: 2rem;
+    text-align: center;
+    animation: fadeInUp 0.8s ease 0.8s both;
+}
+
+.btn-clear {
+    background: transparent;
+    border: 2px solid rgba(255, 0, 85, 0.5);
+    color: #ff0055;
+    padding: 0.75rem 2rem;
+    border-radius: 12px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.btn-clear:hover {
+    background: #ff0055;
+    color: white;
+    box-shadow: 0 0 20px rgba(255, 0, 85, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.empty-state::before {
+    content: '🚀';
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 0;
+    }
+
+    .glass {
+        padding: 1.5rem;
+    }
+
+    .input-row {
+        grid-template-columns: 1fr;
+    }
+
+    .filters {
+        gap: 0.75rem;
+    }
+
+    .filter-btn {
+        min-width: auto;
+        flex: 1 1 calc(50% - 0.375rem);
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+    }
+
+    .todo-item {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .checkbox-wrapper {
+        align-self: flex-start;
+    }
+
+    .delete-btn {
+        align-self: flex-end;
+        margin-top: 0.5rem;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-btn {
+        flex: 1 1 100%;
+    }
+
+    .btn-add,
+    .btn-clear {
+        width: 100%;
+    }
+}
