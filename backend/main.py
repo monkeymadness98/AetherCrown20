@@ -16,11 +16,22 @@ try:
 except ImportError:
     redis_asyncio = None
 
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass
+# Environment detection: prefer ENV or ENVIRONMENT, default to production
+ENV = os.getenv("ENV", os.getenv("ENVIRONMENT", "production"))
+
+# Load .env only in non-production (local dev)
+if ENV != "production":
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except Exception:
+        pass
+
+# Configure logging
+log_level = logging.INFO if ENV == "production" else logging.DEBUG
+logging.basicConfig(level=log_level, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+logger = logging.getLogger(__name__)
+logger.info("Starting backend; ENV=%s", ENV)
 
 from fastapi import FastAPI
 
