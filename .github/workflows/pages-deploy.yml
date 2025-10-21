@@ -11,7 +11,7 @@ jobs:
       - name: Deploy Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
           path: static-clock/
       - name: Deploy to GitHub Pages
