@@ -196,3 +196,9 @@ pytest
 ## Support
 
 For issues and questions, please open an issue on GitHub.
+
+---
+
+## Todo App
+
+The repository now includes a **Futuristic Todo 2030** application with neon/glassmorphism UI design. See the deployment section above for instructions on how to deploy to GitHub Pages or run locally.
