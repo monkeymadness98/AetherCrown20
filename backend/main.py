@@ -1,11 +1,13 @@
 """
 Minimal Render-ready FastAPI app for backend.main:app (import-safe)
 
-- Guards optional imports so uvicorn can import the module even if optional libs are missing.
+Guards optional imports so uvicorn can import the module even if optional libs are missing.
 - Reads env vars: DATABASE_URL, REDIS_URL, PAYPAL_CLIENT_ID, PAYPAL_SECRET, PAYPAL_URL_KEY
+- Guards optional imports so module import never fails
 - Async startup/shutdown that initialize optional DB/Redis clients if configured.
 - /healthz and /clocks endpoints for smoke tests.
 """
+
 import os
 import logging
 from typing import Optional
@@ -42,14 +44,17 @@ if load_dotenv:
 logger = logging.getLogger("backend")
 logging.basicConfig(level=logging.INFO)
 
+# Environment variables (read once)
 DATABASE_URL: Optional[str] = os.getenv("DATABASE_URL")
 REDIS_URL: Optional[str] = os.getenv("REDIS_URL")
 PAYPAL_CLIENT_ID: Optional[str] = os.getenv("PAYPAL_CLIENT_ID")
 PAYPAL_SECRET: Optional[str] = os.getenv("PAYPAL_SECRET")
 PAYPAL_URL_KEY: Optional[str] = os.getenv("PAYPAL_URL_KEY")
 
+# FastAPI app (this is the entrypoint for uvicorn: backend.main:app)
 app = FastAPI(title="AetherCrown20 Backend")
 
+# Allow CORS for the frontend; restrict origins in production
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # change to specific origins in production
@@ -88,9 +93,9 @@ async def startup_event():
             _redis_client = aioredis.from_url(REDIS_URL)
             try:
                 await _redis_client.ping()
-                logger.info("Connected to Redis.")
+                logger.info("Redis client initialized and ping succeeded.")
             except Exception as e:
-                logger.warning("Redis ping failed: %s", e)
+                logger.warning("Redis client created but ping failed: %s", e)
         except Exception as e:
             logger.exception("Failed to create Redis client: %s", e)
             _redis_client = None
@@ -102,25 +107,25 @@ async def startup_event():
     if not (PAYPAL_CLIENT_ID and PAYPAL_SECRET) and not PAYPAL_URL_KEY:
         logger.warning(
             "PayPal credentials not fully configured (PAYPAL_CLIENT_ID/PAYPAL_SECRET or PAYPAL_URL_KEY). "
-            "Payment features may be disabled."
-        )
+            "This app will continue to run but PayPal-related functionality may be disabled.")
 
 
 @app.on_event("shutdown")
 async def shutdown_event():
     global _db_engine, _redis_client
-    if _redis_client:
-        try:
+    try:
+        if _redis_client:
             await _redis_client.close()
             logger.info("Redis client closed.")
-        except Exception:
-            logger.exception("Error closing Redis client.")
-    if _db_engine:
-        try:
+    except Exception:
+        logger.exception("Error while closing Redis client")
+
+    try:
+        if _db_engine:
             _db_engine.dispose()
             logger.info("DB engine disposed.")
-        except Exception:
-            logger.exception("Error disposing DB engine.")
+    except Exception:
+        logger.exception("Error while disposing DB engine")
 
 
 @app.get("/healthz")
@@ -135,8 +140,8 @@ async def healthz():
             status["db"] = False
     if _redis_client:
         try:
-            pong = await _redis_client.ping()
-            status["redis"] = bool(pong)
+            await _redis_client.ping()
+            status["redis"] = True
         except Exception:
             status["redis"] = False
     return status

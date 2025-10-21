@@ -1,9 +1,5 @@
-fastapi==0.95.2
-uvicorn[standard]==0.23.2
-python-dotenv==1.0.0
-httpx==0.24.0
-SQLAlchemy==2.0.20
-psycopg2-binary==2.9.7  # if using Postgres
-redis==4.5.5
-aiofiles==23.1.0
-# Add any other runtime packages needed by backend
+fastapi>=0.95
+uvicorn[standard]>=0.21
+python-dotenv>=1.0
+SQLAlchemy>=1.4
+redis>=4.5
