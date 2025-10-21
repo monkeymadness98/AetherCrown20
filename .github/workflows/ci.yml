@@ -38,6 +38,20 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           pip install pytest pytest-cov flake8
       
+      - name: Run DB migrations (if Alembic/Django detected)
+        working-directory: ./backend
+        run: |
+          if [ -f alembic.ini ] || [ -d alembic ]; then
+            python -m pip install alembic
+            alembic upgrade head || true
+          elif [ -d migrations ]; then
+            echo "Django migrations detected; consider running manage.py migrate in deployment."
+          else
+            echo "No migration tooling detected."
+          fi
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      
       - name: Lint with flake8
         run: |
           # Stop the build if there are Python syntax errors or undefined names
