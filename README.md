@@ -4,8 +4,15 @@ A comprehensive automation platform for empire management with PayPal integratio
 
 ## Features
 
-- **Backend API**: FastAPI-based backend with uvicorn server
-- **Empire Automation**: One-shot automation script for empire management tasks
+- **Backend API**: FastAPI-based backend with uvicorn server (54+ API endpoints)
+- **AI Optimization**: Marketing budget optimizer, churn prediction, task scheduling
+- **Revenue Expansion**: Dynamic pricing engine, upsell automation
+- **Dashboards**: Executive summary, analytics, investor dashboards
+- **Content Marketing**: AI-powered content generation, A/B testing automation
+- **Enterprise Automation**: Onboarding flows, usage monitoring, renewal prediction
+- **Security & Compliance**: Automated key rotation, health monitoring
+- **Multi-Tenant**: Isolated tenant provisioning and scaling
+- **Investor Tools**: Live KPIs, activity feeds, monthly reports
 - **Payment Integration**: PayPal client integration for payment processing
 - **Deployment Automation**: CI/CD pipelines for Render and Vercel deployments
 
@@ -56,21 +63,74 @@ uvicorn backend.main:app --reload
 
 The API will be available at `http://localhost:8000`
 
-### Running Empire Automation
+### Running Autonomous Automation
 
-The empire automation script can be run as a one-shot task:
+The automation runner executes AI-powered optimization tasks:
 
 ```bash
-python backend/empire_automation.py
+# One-shot execution
+PYTHONPATH=. python backend/automation_runner.py
+
+# For continuous operation, modify the script to use:
+# await runner.run_continuous(check_interval_minutes=30)
 ```
 
-**Note**: Ensure that `backend/empire_automation.py` has proper locking mechanism if running concurrently or is designed as a one-shot script.
+**Automated Tasks Include:**
+- Marketing budget optimization (daily)
+- Churn prediction and retention campaigns (every 12h)
+- AI task scheduling optimization (hourly)
+- System health checks (hourly)
+- Security key rotation (daily)
+
+See `AUTOMATION_GUIDE.md` for comprehensive documentation.
 
 ## API Documentation
 
 Once the server is running, visit:
 - Swagger UI: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
+
+### API Overview
+
+**54+ Endpoints Across 8 Modules:**
+
+1. **Optimization APIs** (`/api/v1/optimization`)
+   - Budget allocation optimizer
+   - Churn prediction
+   - Task scheduling
+
+2. **Revenue APIs** (`/api/v1/revenue`)
+   - Dynamic pricing
+   - Tier recommendations
+   - Upsell analysis
+
+3. **Dashboard APIs** (`/api/v1/dashboard`)
+   - Executive summary
+   - Revenue/AI/Growth metrics
+
+4. **Content APIs** (`/api/v1/content`)
+   - Content generation (blog, social, email)
+   - A/B testing management
+
+5. **Enterprise APIs** (`/api/v1/enterprise`)
+   - Onboarding automation
+   - Usage monitoring
+   - Renewal probability
+
+6. **Operational APIs** (`/api/v1/operational`)
+   - Health checks
+   - Key rotation
+   - Security reports
+
+7. **Multi-Tenant APIs** (`/api/v1/tenants`)
+   - Tenant provisioning
+   - Resource scaling
+   - Usage monitoring
+
+8. **Investor APIs** (`/api/v1/investor`)
+   - Live dashboard
+   - Activity feed
+   - Monthly reports
 
 ## Deployment
 
