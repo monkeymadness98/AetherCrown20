@@ -38,8 +38,19 @@ logger.info("Starting backend; ENV=%s", ENV)
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="AetherCrown20 Backend", version="1.0")
+
+# Configure CORS
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:8000").split(",")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/healthz")
 async def healthz():
@@ -68,5 +79,6 @@ async def env_check():
 # Run locally with reload only in non-production
 if __name__ == "__main__":
     import uvicorn
-    # Use app directly so running python backend/main.py works regardless of CWD
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=(ENV != "production"))
+    # Use PORT from environment or default to 8000 for local dev
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run(app, host="0.0.0.0", port=port, reload=(ENV != "production"))

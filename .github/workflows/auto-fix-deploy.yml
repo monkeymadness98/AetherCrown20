@@ -46,22 +46,30 @@ jobs:
 
       - name: Install frontend dependencies & regenerate lockfile
         run: |
-          cd frontend
-          npm ci
-          git add package-lock.json
-          git commit -m "chore: regenerate frontend package-lock after auto-merge" || echo "No changes to commit"
+          if [ -d "frontend" ]; then
+            cd frontend
+            npm ci
+            git add package-lock.json
+            git commit -m "chore: regenerate frontend package-lock after auto-merge" || echo "No changes to commit"
+          else
+            echo "No frontend directory found, using static HTML"
+          fi
 
       - name: Install backend dependencies
         run: |
           cd backend
           python -m venv .venv
           source .venv/bin/activate
-          pip install -r requirements.txt
+          pip install -r ../requirements.txt
 
       - name: Run frontend build
         run: |
-          cd frontend
-          npm run build
+          if [ -d "frontend" ]; then
+            cd frontend
+            npm run build
+          else
+            echo "No frontend directory found, using static HTML"
+          fi
 
       - name: Run backend sanity check
         run: |
@@ -81,7 +89,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check if frontend directory exists
+        id: check_frontend
+        run: |
+          if [ -d "frontend" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "No frontend directory found, using static HTML"
+          fi
+
       - name: Setup Node.js
+        if: steps.check_frontend.outputs.exists == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '18.17.0'
@@ -89,10 +108,12 @@ jobs:
           cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Install frontend dependencies
+        if: steps.check_frontend.outputs.exists == 'true'
         working-directory: frontend
         run: npm ci
 
       - name: Build frontend
+        if: steps.check_frontend.outputs.exists == 'true'
         working-directory: frontend
         run: npm run build
 
@@ -119,4 +140,8 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
           npm i -g vercel@28
-          vercel deploy frontend --prod --token $VERCEL_TOKEN
+          if [ -d "frontend" ]; then
+            vercel deploy frontend --prod --token $VERCEL_TOKEN
+          else
+            vercel deploy --prod --token $VERCEL_TOKEN
+          fi

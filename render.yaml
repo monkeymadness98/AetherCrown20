@@ -10,12 +10,33 @@ services:
     buildCommand: pip install -r ../requirements.txt
     startCommand: gunicorn -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:$PORT --workers 2 --log-level info
     autoDeploy: true
+    healthCheckPath: /healthz
     envVars:
       - key: ENV
         value: production
+      - key: PORT
+        value: 10000
       - key: PAYPAL_CLIENT_ID
         sync: false
       - key: PAYPAL_SECRET
         sync: false
+      - key: PAYPAL_MODE
+        value: sandbox
       - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+      - key: HEALTHCHECKS_PING_URL
+        sync: false
+      - key: SECRET_KEY
         sync: false

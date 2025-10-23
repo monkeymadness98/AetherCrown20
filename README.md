@@ -148,6 +148,154 @@ GitHub Actions workflows are configured in `.github/workflows/ci.yml` for:
 Configure the following secrets in your GitHub repository settings:
 
 - `RENDER_API_KEY`: Render API key for deployment
+- `RENDER_SERVICE_ID`: Your Render service ID
+- `VERCEL_TOKEN`: Vercel authentication token
+- `VERCEL_ORG_ID`: Vercel organization ID
+- `VERCEL_PROJECT_ID`: Vercel project ID
+- `DATABASE_URL`: PostgreSQL database connection string
+- `PAYPAL_CLIENT_ID`: PayPal API client ID
+- `PAYPAL_SECRET`: PayPal API secret
+- `SUPABASE_URL`: Supabase project URL
+- `SUPABASE_KEY`: Supabase anonymous key
+- `STRIPE_SECRET_KEY`: Stripe secret API key
+- `STRIPE_PUBLISHABLE_KEY`: Stripe publishable key
+- `SENTRY_DSN`: Sentry error tracking DSN
+- `HEALTHCHECKS_PING_URL`: Healthchecks.io monitoring URL
+- `SECRET_KEY`: Application secret key for JWT/sessions
+
+## Deployment Verification
+
+After deployment, verify that everything is working correctly:
+
+### Quick Health Check
+
+```bash
+curl https://aethercrown98-backend.onrender.com/healthz
+```
+
+Expected response:
+```json
+{"ok": true, "env": "production"}
+```
+
+### Comprehensive Verification
+
+Run the verification script to check all components:
+
+```bash
+./verify-deployment.sh
+```
+
+Or manually check each component:
+
+1. **Backend Health Check**
+   ```bash
+   curl https://aethercrown98-backend.onrender.com/healthz
+   ```
+   ✅ Should return HTTP 200 with `{"ok": true}`
+
+2. **Backend API Endpoint**
+   ```bash
+   curl https://aethercrown98-backend.onrender.com/clocks
+   ```
+   ✅ Should return `{"message": "Backend is alive and connected."}`
+
+3. **Environment Variables Check**
+   ```bash
+   curl https://aethercrown98-backend.onrender.com/_env_check
+   ```
+   ⚠️ Remove this endpoint in production (it's for verification only)
+
+4. **Frontend Check**
+   - Visit your Vercel URL
+   - Open browser DevTools → Network tab
+   - Verify API calls to backend succeed
+
+### Troubleshooting
+
+If deployment fails, check each layer systematically:
+
+#### 1. GitHub Actions CI/CD
+- Check workflow runs in GitHub Actions tab
+- Look for errors in build logs, npm install, or pip install
+- Verify all secrets are configured correctly
+
+#### 2. Render Backend
+- Visit: https://dashboard.render.com/
+- Check service logs for errors
+- Verify environment variables are set:
+  - `ENV=production`
+  - `PORT=10000` (or Render's auto-assigned port)
+  - `PAYPAL_CLIENT_ID`, `PAYPAL_SECRET`
+  - `DATABASE_URL`
+  - All other required secrets
+
+Common issues:
+- ❌ Missing environment variables
+- ❌ Port misconfiguration (should use `$PORT`)
+- ❌ Dependency installation failures
+- ❌ Python version mismatch
+
+#### 3. Vercel Frontend
+- Visit: https://vercel.com/dashboard
+- Check deployment logs
+- Verify environment variables:
+  - `NEXT_PUBLIC_API_URL` → Points to Render backend
+  - `NEXT_PUBLIC_SUPABASE_URL`
+  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+#### 4. Service Connections
+Test each integration independently:
+
+**Supabase**
+```bash
+curl -H "apikey: YOUR_SUPABASE_KEY" https://your-project.supabase.co/rest/v1/
+```
+
+**Backend → Supabase**
+- Check backend logs for database connection errors
+- Verify DATABASE_URL format: `postgresql://user:pass@host:port/dbname`
+
+**Frontend → Backend**
+- Open browser console
+- Check for CORS errors
+- Verify API URL is correct
+
+### Monitoring
+
+Set up continuous monitoring:
+
+1. **Healthchecks.io** (recommended)
+   - Sign up at https://healthchecks.io
+   - Create a check and get your ping URL
+   - Add to GitHub Secrets: `HEALTHCHECKS_PING_URL`
+   - Run periodic health checks:
+     ```bash
+     ./healthcheck.sh
+     ```
+
+2. **Sentry** (error tracking)
+   - Backend automatically reports errors if `SENTRY_DSN` is configured
+   - Monitor at https://sentry.io
+
+3. **Manual Verification**
+   ```bash
+   # Set environment variables
+   export BACKEND_URL=https://aethercrown98-backend.onrender.com
+   export FRONTEND_URL=https://your-app.vercel.app
+   
+   # Run verification
+   ./verify-deployment.sh
+   ```
+
+### Deployment Order
+
+For successful deployment:
+
+1. **Backend First**: Deploy to Render, wait for health check ✅
+2. **Verify Backend**: Run `curl $BACKEND_URL/healthz`
+3. **Frontend Second**: Deploy to Vercel with backend URL
+4. **Final Verification**: Test end-to-end functionality
 - `RENDER_SERVICE_ID`: Render service ID
 - `VERCEL_TOKEN`: Vercel authentication token
 - `PAYPAL_CLIENT_ID`: PayPal client ID
