@@ -38,8 +38,35 @@ logger.info("Starting backend; ENV=%s", ENV)
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="AetherCrown20 Backend", version="1.0")
+app = FastAPI(
+    title="AetherCrown20 Backend", 
+    version="1.0",
+    description="Autonomous optimization and decision-making platform"
+)
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Import and include routers
+try:
+    from backend.routers.optimization import router as optimization_router
+    from backend.routers.revenue import router as revenue_router
+    from backend.routers.dashboard import router as dashboard_router
+    
+    app.include_router(optimization_router)
+    app.include_router(revenue_router)
+    app.include_router(dashboard_router)
+    logger.info("All routers loaded successfully")
+except Exception as e:
+    logger.warning(f"Could not load some routers: {e}")
 
 @app.get("/healthz")
 async def healthz():
