@@ -60,10 +60,16 @@ try:
     from backend.routers.optimization import router as optimization_router
     from backend.routers.revenue import router as revenue_router
     from backend.routers.dashboard import router as dashboard_router
+    from backend.routers.content import router as content_router
+    from backend.routers.enterprise import router as enterprise_router
+    from backend.routers.operational import router as operational_router
     
     app.include_router(optimization_router)
     app.include_router(revenue_router)
     app.include_router(dashboard_router)
+    app.include_router(content_router)
+    app.include_router(enterprise_router)
+    app.include_router(operational_router)
     logger.info("All routers loaded successfully")
 except Exception as e:
     logger.warning(f"Could not load some routers: {e}")
