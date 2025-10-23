@@ -1,0 +1,37 @@
+name: Healthcheck
+
+on:
+  schedule:
+    # Run every 15 minutes
+    - cron: '*/15 * * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  healthcheck:
+    name: Check Backend Health
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check Backend Health
+        run: |
+          BACKEND_URL="${{ secrets.BACKEND_URL || 'https://aethercrown20.onrender.com' }}"
+          
+          echo "Checking backend health at $BACKEND_URL"
+          
+          # Check healthz endpoint
+          HEALTH_RESPONSE=$(curl -s -w "\n%{http_code}" "$BACKEND_URL/healthz")
+          HTTP_CODE=$(echo "$HEALTH_RESPONSE" | tail -n1)
+          
+          if [ "$HTTP_CODE" -eq 200 ]; then
+            echo "✅ Backend is healthy (HTTP $HTTP_CODE)"
+            exit 0
+          else
+            echo "❌ Backend health check failed (HTTP $HTTP_CODE)"
+            exit 1
+          fi
+      
+      - name: Notify on Failure
+        if: failure()
+        run: |
+          echo "Backend health check failed! Alert administrators."
+          # Add notification logic here (email, Slack, etc.)

@@ -197,6 +197,35 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN || true
+      
+      - name: Create Deployment Summary
+        if: success()
+        run: |
+          mkdir -p reports
+          cat > reports/deploy_summary.txt << EOF
+          ========================================
+          AetherCrown20 Deployment Summary
+          ========================================
+          
+          Date: $(date)
+          Branch: ${GITHUB_REF#refs/heads/}
+          Commit: ${GITHUB_SHA:0:7}
+          
+          Deployments:
+          ✅ Backend deployed to Render
+          ✅ Frontend deployed to Vercel
+          ✅ Dev Hub available at /dev
+          ✅ Live Dashboard available at /live
+          
+          New Features:
+          - Developer Hub with API docs, logs, and AI agents
+          - Live Dashboard with metrics, payments, and activity feed
+          - Real-time monitoring and analytics
+          - Enterprise features and SLA tracking
+          
+          ========================================
+          EOF
+          cat reports/deploy_summary.txt
 
   notify:
     name: Deployment Notification

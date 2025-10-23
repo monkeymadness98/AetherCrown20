@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empire Live - AetherCrown20</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>⚡ AetherCrown</h2>
+                <span class="badge live">LIVE</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="/live/index.html" class="nav-item active">
+                    <span class="icon">📊</span> Dashboard
+                </a>
+                <a href="/live/metrics.html" class="nav-item">
+                    <span class="icon">📈</span> Metrics
+                </a>
+                <a href="/live/payments.html" class="nav-item">
+                    <span class="icon">💳</span> Payments
+                </a>
+                <a href="/live/ai-feed.html" class="nav-item">
+                    <span class="icon">🤖</span> AI Activity
+                </a>
+                <a href="/live/marketing.html" class="nav-item">
+                    <span class="icon">📢</span> Marketing
+                </a>
+                <a href="/live/enterprise.html" class="nav-item">
+                    <span class="icon">⭐</span> Enterprise
+                </a>
+                <div class="nav-divider"></div>
+                <a href="/dev/index.html" class="nav-item">
+                    <span class="icon">🔧</span> Dev Hub
+                </a>
+                <a href="/index.html" class="nav-item">
+                    <span class="icon">🏠</span> Home
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h1>Empire Live Dashboard</h1>
+                <div class="header-actions">
+                    <span class="status-indicator">
+                        <span class="status-dot online"></span>
+                        <span id="uptime-display">99.95% Uptime</span>
+                    </span>
+                </div>
+            </header>
+
+            <!-- Key Metrics Cards -->
+            <section class="cards-grid metrics-cards">
+                <div class="card metric-card">
+                    <div class="metric-icon revenue">💰</div>
+                    <div class="metric-content">
+                        <h3>Monthly Revenue (MRR)</h3>
+                        <div class="metric-value" id="mrr-value">Loading...</div>
+                        <div class="metric-change positive" id="mrr-change">+0%</div>
+                    </div>
+                </div>
+
+                <div class="card metric-card">
+                    <div class="metric-icon users">👥</div>
+                    <div class="metric-content">
+                        <h3>Active Users</h3>
+                        <div class="metric-value" id="users-value">Loading...</div>
+                        <div class="metric-detail" id="users-detail">0 new today</div>
+                    </div>
+                </div>
+
+                <div class="card metric-card">
+                    <div class="metric-icon ai">🤖</div>
+                    <div class="metric-content">
+                        <h3>AI Tasks Today</h3>
+                        <div class="metric-value" id="ai-tasks-value">Loading...</div>
+                        <div class="metric-detail" id="ai-success-rate">0% success rate</div>
+                    </div>
+                </div>
+
+                <div class="card metric-card">
+                    <div class="metric-icon uptime">✅</div>
+                    <div class="metric-content">
+                        <h3>System Uptime</h3>
+                        <div class="metric-value" id="uptime-value">Loading...</div>
+                        <div class="metric-detail" id="last-incident">Last incident: N/A</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Revenue Trend</h2>
+                </div>
+                <div class="card">
+                    <div class="chart-container">
+                        <canvas id="revenue-chart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Activity -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Recent Activity</h2>
+                    <button class="btn-primary" onclick="loadDashboard()">🔄 Refresh</button>
+                </div>
+                <div class="activity-grid">
+                    <div class="card">
+                        <h3>Latest AI Tasks</h3>
+                        <div id="recent-ai-tasks" class="activity-list">
+                            <div class="loading">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Recent Signups</h3>
+                        <div id="recent-signups" class="activity-list">
+                            <div class="loading">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+    <script>
+        async function loadDashboard() {
+            try {
+                const res = await fetch('/api/live/metrics');
+                const data = await res.json();
+                
+                // Update MRR
+                document.getElementById('mrr-value').textContent = `$${data.revenue.mrr.toLocaleString()}`;
+                document.getElementById('mrr-change').textContent = `+${data.revenue.growth}% growth`;
+                
+                // Update Users
+                document.getElementById('users-value').textContent = data.users.active.toLocaleString();
+                document.getElementById('users-detail').textContent = `${data.users.new_today} new today`;
+                
+                // Update AI Tasks
+                document.getElementById('ai-tasks-value').textContent = data.ai_tasks.completed_today.toLocaleString();
+                document.getElementById('ai-success-rate').textContent = `${data.ai_tasks.success_rate}% success rate`;
+                
+                // Update Uptime
+                document.getElementById('uptime-value').textContent = `${data.uptime.percentage}%`;
+                document.getElementById('uptime-display').textContent = `${data.uptime.percentage}% Uptime`;
+                document.getElementById('last-incident').textContent = 
+                    `Last incident: ${new Date(data.uptime.last_incident).toLocaleDateString()}`;
+
+                // Load AI activity
+                await loadAIActivity();
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        async function loadAIActivity() {
+            try {
+                const res = await fetch('/api/live/ai-activity');
+                const data = await res.json();
+                
+                document.getElementById('recent-ai-tasks').innerHTML = 
+                    data.feed.slice(0, 5).map(item => `
+                        <div class="activity-item">
+                            <span class="activity-time">${new Date(item.timestamp).toLocaleTimeString()}</span>
+                            <span class="activity-text">${item.activity}</span>
+                        </div>
+                    `).join('');
+
+                // Mock recent signups
+                document.getElementById('recent-signups').innerHTML = `
+                    <div class="activity-item">
+                        <span class="activity-time">${new Date().toLocaleTimeString()}</span>
+                        <span class="activity-text">New user signup: user-***123</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-time">${new Date(Date.now() - 1800000).toLocaleTimeString()}</span>
+                        <span class="activity-text">Enterprise trial started</span>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading AI activity:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+        
+        // Auto-refresh every 30 seconds
+        setInterval(loadDashboard, 30000);
+    </script>
+</body>
+</html>
