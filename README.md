@@ -6,16 +6,21 @@ A comprehensive automation platform for empire management with PayPal integratio
 
 - **Backend API**: FastAPI-based backend with uvicorn server
 - **Empire Automation**: One-shot automation script for empire management tasks
-- **Payment Integration**: PayPal client integration for payment processing
+- **Payment Integration**: PayPal and Stripe integration for payment processing
 - **Deployment Automation**: CI/CD pipelines for Render and Vercel deployments
+- **AI Agent Sweep**: Comprehensive automation system for deployment, monitoring, and auto-fixing
+- **Health Monitoring**: Automated health checks and recovery mechanisms
+- **Environment Management**: Automatic environment variable validation and loading
 
 ## Prerequisites
 
 - Python 3.8+
-- Node.js 14+ (for frontend, if applicable)
+- Node.js 14+ (for automation scripts and frontend)
 - PayPal Developer Account
+- Stripe Account
 - Render Account
 - Vercel Account
+- Supabase Account (for database)
 
 ## Installation
 
@@ -30,21 +35,35 @@ cd AetherCrown20
 pip install -r requirements.txt
 ```
 
-3. Copy the example environment file:
+3. Install Node.js dependencies (for automation scripts):
 ```bash
-cp .env.example .env
+npm install
 ```
 
-4. Configure your environment variables in `.env`
+4. Copy the example environment file:
+```bash
+cp .env.template .env
+```
+
+5. Configure your environment variables in `.env` (see `.env.template` for all options)
+
+6. Verify your environment setup:
+```bash
+npm run verify-env
+```
 
 ## Configuration
 
-Create a `.env` file based on `.env.example` and configure the following:
+Create a `.env` file based on `.env.template` and configure the following:
 
-- **PayPal Credentials**: `PAYPAL_CLIENT_ID`, `PAYPAL_SECRET`
+- **URLs**: `BACKEND_URL`, `FRONTEND_URL`
+- **Database (Supabase)**: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
+- **Payment Providers**: `PAYPAL_CLIENT_ID`, `PAYPAL_SECRET`, `STRIPE_SECRET_KEY`
 - **Deployment Keys**: `RENDER_API_KEY`, `RENDER_SERVICE_ID`, `VERCEL_TOKEN`
-- **Database**: Connection strings and credentials
-- **API Keys**: External service API keys
+- **Monitoring**: `SENTRY_DSN`, `HEALTHCHECKS_URL`
+- **Environment**: `ENVIRONMENT` (development, staging, or production)
+
+See `.env.template` for a complete list of all configuration options.
 
 ## Running the Application
 
@@ -65,6 +84,51 @@ python backend/empire_automation.py
 ```
 
 **Note**: Ensure that `backend/empire_automation.py` has proper locking mechanism if running concurrently or is designed as a one-shot script.
+
+## AI Agent Automation System
+
+AetherCrown20 includes a comprehensive AI agent automation system for deployment, monitoring, and auto-fixing. See [AUTOMATION.md](AUTOMATION.md) for detailed documentation.
+
+### Quick Start with Automation
+
+#### Run a Quick Deployment Fix
+```bash
+npm run deploy-fix
+```
+
+#### Run a Full System Sweep
+```bash
+npm run sweep
+```
+
+#### Check System Health
+```bash
+npm run health-check
+```
+
+#### Deploy Services
+```bash
+# Deploy backend to Render
+npm run deploy:backend
+
+# Deploy frontend to Vercel
+npm run deploy:frontend
+
+# Deploy both
+npm run deploy:all
+```
+
+### Automation Features
+
+- **Environment Verification**: Automatic validation and loading of environment variables
+- **Health Monitoring**: Continuous health checks with auto-recovery
+- **Dependency Management**: Automatic installation and updates
+- **Deployment Automation**: One-command deployment to Render and Vercel
+- **Error Detection**: Automatic detection and fixing of common issues
+- **Comprehensive Reporting**: Detailed JSON reports of all operations
+- **Scheduled Sweeps**: GitHub Actions workflow for daily automated checks
+
+For complete automation documentation, see [AUTOMATION.md](AUTOMATION.md).
 
 ## API Documentation
 
