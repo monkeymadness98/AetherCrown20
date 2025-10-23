@@ -1,0 +1,34 @@
+{
+  "name": "aethercrown20-automation",
+  "version": "1.0.0",
+  "description": "AI Agent Deployment Sweep Automation for AetherCrown20",
+  "main": "ai-agent-sweep.js",
+  "scripts": {
+    "deploy-fix": "node ai-deploy-fix.js",
+    "sweep": "node ai-agent-sweep.js",
+    "sweep:dev": "ENVIRONMENT=development node ai-agent-sweep.js",
+    "sweep:prod": "ENVIRONMENT=production node ai-agent-sweep.js",
+    "health-check": "node scripts/health-check.js",
+    "verify-env": "node scripts/verify-env.js",
+    "deploy:backend": "node scripts/deploy-backend.js",
+    "deploy:frontend": "node scripts/deploy-frontend.js",
+    "deploy:all": "npm run deploy:backend && npm run deploy:frontend",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "automation",
+    "deployment",
+    "ai-agent",
+    "devops",
+    "monitoring"
+  ],
+  "author": "AetherCrown Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
