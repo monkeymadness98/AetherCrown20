@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - Dev Hub</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>⚡ AetherCrown</h2>
+                <span class="badge dev">DEV HUB</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="/dev/index.html" class="nav-item">
+                    <span class="icon">📊</span> Dashboard
+                </a>
+                <a href="/dev/api-docs.html" class="nav-item active">
+                    <span class="icon">📚</span> API Docs
+                </a>
+                <a href="/dev/logs.html" class="nav-item">
+                    <span class="icon">📝</span> Logs
+                </a>
+                <a href="/dev/ai-agents.html" class="nav-item">
+                    <span class="icon">🤖</span> AI Agents
+                </a>
+                <a href="/dev/analytics.html" class="nav-item">
+                    <span class="icon">📈</span> Analytics
+                </a>
+                <a href="/dev/tools.html" class="nav-item">
+                    <span class="icon">🛠️</span> Tools
+                </a>
+                <div class="nav-divider"></div>
+                <a href="/live/index.html" class="nav-item">
+                    <span class="icon">🌐</span> Live Dashboard
+                </a>
+                <a href="/index.html" class="nav-item">
+                    <span class="icon">🏠</span> Home
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h1>API Documentation</h1>
+                <div class="header-actions">
+                    <a href="/docs" target="_blank" class="btn-primary">📖 Swagger UI</a>
+                    <a href="/redoc" target="_blank" class="btn-secondary">📚 ReDoc</a>
+                </div>
+            </header>
+
+            <!-- API Endpoints -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Dev Hub Endpoints</h2>
+                </div>
+                <div class="api-endpoints">
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="http-method get">GET</span>
+                            <code>/api/dev/status</code>
+                        </div>
+                        <p>Get overall system status including backend, database, and Redis</p>
+                        <button class="btn-small" onclick="tryEndpoint('/api/dev/status')">Try it</button>
+                    </div>
+
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="http-method get">GET</span>
+                            <code>/api/dev/builds</code>
+                        </div>
+                        <p>Get recent build and deployment logs</p>
+                        <button class="btn-small" onclick="tryEndpoint('/api/dev/builds')">Try it</button>
+                    </div>
+
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="http-method get">GET</span>
+                            <code>/api/dev/ai-agents</code>
+                        </div>
+                        <p>Get AI agent status, tasks, and performance metrics</p>
+                        <button class="btn-small" onclick="tryEndpoint('/api/dev/ai-agents')">Try it</button>
+                    </div>
+
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="http-method get">GET</span>
+                            <code>/api/dev/analytics</code>
+                        </div>
+                        <p>Get database tables and recent events</p>
+                        <button class="btn-small" onclick="tryEndpoint('/api/dev/analytics')">Try it</button>
+                    </div>
+
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="http-method get">GET</span>
+                            <code>/api/dev/logs</code>
+                        </div>
+                        <p>Get recent application logs</p>
+                        <button class="btn-small" onclick="tryEndpoint('/api/dev/logs')">Try it</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-header">
+                    <h2>Live Dashboard Endpoints</h2>
+                </div>
+                <div class="api-endpoints">
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="http-method get">GET</span>
+                            <code>/api/live/metrics</code>
+                        </div>
+                        <p>Get business metrics including revenue, users, and AI tasks</p>
+                        <button class="btn-small" onclick="tryEndpoint('/api/live/metrics')">Try it</button>
+                    </div>
+
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="http-method get">GET</span>
+                            <code>/api/live/payments</code>
+                        </div>
+                        <p>Get payment and subscription data</p>
+                        <button class="btn-small" onclick="tryEndpoint('/api/live/payments')">Try it</button>
+                    </div>
+
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="http-method get">GET</span>
+                            <code>/api/live/ai-activity</code>
+                        </div>
+                        <p>Get real-time AI activity feed</p>
+                        <button class="btn-small" onclick="tryEndpoint('/api/live/ai-activity')">Try it</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Response Display -->
+            <section class="section" id="response-section" style="display: none;">
+                <div class="section-header">
+                    <h2>Response</h2>
+                    <button class="btn-small" onclick="closeResponse()">✕ Close</button>
+                </div>
+                <pre id="response-display" class="code-block"></pre>
+            </section>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+    <script>
+        async function tryEndpoint(endpoint) {
+            try {
+                const res = await fetch(endpoint);
+                const data = await res.json();
+                
+                document.getElementById('response-section').style.display = 'block';
+                document.getElementById('response-display').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                console.error('Error trying endpoint:', error);
+                alert('Error: ' + error.message);
+            }
+        }
+
+        function closeResponse() {
+            document.getElementById('response-section').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

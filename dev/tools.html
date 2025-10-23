@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Tools - Dev Hub</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>⚡ AetherCrown</h2>
+                <span class="badge dev">DEV HUB</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="/dev/index.html" class="nav-item">
+                    <span class="icon">📊</span> Dashboard
+                </a>
+                <a href="/dev/api-docs.html" class="nav-item">
+                    <span class="icon">📚</span> API Docs
+                </a>
+                <a href="/dev/logs.html" class="nav-item">
+                    <span class="icon">📝</span> Logs
+                </a>
+                <a href="/dev/ai-agents.html" class="nav-item">
+                    <span class="icon">🤖</span> AI Agents
+                </a>
+                <a href="/dev/analytics.html" class="nav-item">
+                    <span class="icon">📈</span> Analytics
+                </a>
+                <a href="/dev/tools.html" class="nav-item active">
+                    <span class="icon">🛠️</span> Tools
+                </a>
+                <div class="nav-divider"></div>
+                <a href="/live/index.html" class="nav-item">
+                    <span class="icon">🌐</span> Live Dashboard
+                </a>
+                <a href="/index.html" class="nav-item">
+                    <span class="icon">🏠</span> Home
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h1>Developer Tools</h1>
+            </header>
+
+            <!-- Quick Actions -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="tools-grid">
+                    <div class="card tool-card">
+                        <h3>🚀 Deploy Staging</h3>
+                        <p>Deploy latest code to staging environment</p>
+                        <button class="btn-primary" onclick="runAction('deploy_staging')">Deploy Now</button>
+                    </div>
+
+                    <div class="card tool-card">
+                        <h3>🔄 Reset Sandbox DB</h3>
+                        <p>Reset sandbox database to clean state</p>
+                        <button class="btn-warning" onclick="runAction('reset_sandbox')">Reset DB</button>
+                    </div>
+
+                    <div class="card tool-card">
+                        <h3>📊 Refresh Analytics</h3>
+                        <p>Manually trigger analytics refresh</p>
+                        <button class="btn-primary" onclick="runAction('refresh_analytics')">Refresh</button>
+                    </div>
+
+                    <div class="card tool-card">
+                        <h3>🧪 Run Tests</h3>
+                        <p>Execute test suite on current branch</p>
+                        <button class="btn-primary" onclick="runAction('run_tests')">Run Tests</button>
+                    </div>
+
+                    <div class="card tool-card">
+                        <h3>🔍 Check Health</h3>
+                        <p>Run comprehensive health check</p>
+                        <button class="btn-primary" onclick="runAction('health_check')">Check Now</button>
+                    </div>
+
+                    <div class="card tool-card">
+                        <h3>📦 Clear Cache</h3>
+                        <p>Clear Redis and application cache</p>
+                        <button class="btn-secondary" onclick="runAction('clear_cache')">Clear Cache</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- API Test Console -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>API Test Console</h2>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <div class="form-group">
+                            <label>Endpoint</label>
+                            <input type="text" id="api-endpoint" placeholder="/api/dev/status" class="input">
+                        </div>
+                        <div class="form-group">
+                            <label>Method</label>
+                            <select id="api-method" class="input">
+                                <option>GET</option>
+                                <option>POST</option>
+                                <option>PUT</option>
+                                <option>DELETE</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Request Body (JSON)</label>
+                            <textarea id="api-body" rows="5" class="input" placeholder='{"key": "value"}'></textarea>
+                        </div>
+                        <button class="btn-primary" onclick="testAPI()">Send Request</button>
+                    </div>
+                </div>
+                <div id="api-response" class="card" style="display: none; margin-top: 1rem;">
+                    <div class="card-header">
+                        <h3>Response</h3>
+                    </div>
+                    <div class="card-content">
+                        <pre id="api-response-content" class="code-block"></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Action Log -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Action Log</h2>
+                </div>
+                <div class="logs-container" id="action-log">
+                    <div class="log-entry">Ready to execute actions...</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+    <script>
+        function runAction(action) {
+            const log = document.getElementById('action-log');
+            const timestamp = new Date().toLocaleString();
+            const actionNames = {
+                'deploy_staging': '🚀 Deploying to staging environment',
+                'reset_sandbox': '🔄 Resetting sandbox database',
+                'refresh_analytics': '📊 Refreshing analytics data',
+                'run_tests': '🧪 Running test suite',
+                'health_check': '🔍 Running health checks',
+                'clear_cache': '📦 Clearing application cache'
+            };
+
+            const entry = document.createElement('div');
+            entry.className = 'log-entry log-info';
+            entry.innerHTML = `
+                <span class="log-timestamp">${timestamp}</span>
+                <span class="log-message">${actionNames[action]}</span>
+            `;
+            log.insertBefore(entry, log.firstChild);
+
+            // Simulate action completion
+            setTimeout(() => {
+                const completeEntry = document.createElement('div');
+                completeEntry.className = 'log-entry log-info';
+                completeEntry.innerHTML = `
+                    <span class="log-timestamp">${new Date().toLocaleString()}</span>
+                    <span class="log-message">✓ ${actionNames[action]} - Completed</span>
+                `;
+                log.insertBefore(completeEntry, log.firstChild);
+            }, 2000);
+        }
+
+        async function testAPI() {
+            const endpoint = document.getElementById('api-endpoint').value;
+            const method = document.getElementById('api-method').value;
+            const body = document.getElementById('api-body').value;
+
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+
+                if (body && method !== 'GET') {
+                    options.body = body;
+                }
+
+                const res = await fetch(endpoint, options);
+                const data = await res.json();
+
+                document.getElementById('api-response').style.display = 'block';
+                document.getElementById('api-response-content').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('api-response').style.display = 'block';
+                document.getElementById('api-response-content').textContent = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

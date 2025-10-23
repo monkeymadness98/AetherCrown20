@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Metrics - Empire Live</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>⚡ AetherCrown</h2>
+                <span class="badge live">LIVE</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="/live/index.html" class="nav-item">
+                    <span class="icon">📊</span> Dashboard
+                </a>
+                <a href="/live/metrics.html" class="nav-item active">
+                    <span class="icon">📈</span> Metrics
+                </a>
+                <a href="/live/payments.html" class="nav-item">
+                    <span class="icon">💳</span> Payments
+                </a>
+                <a href="/live/ai-feed.html" class="nav-item">
+                    <span class="icon">🤖</span> AI Activity
+                </a>
+                <a href="/live/marketing.html" class="nav-item">
+                    <span class="icon">📢</span> Marketing
+                </a>
+                <a href="/live/enterprise.html" class="nav-item">
+                    <span class="icon">⭐</span> Enterprise
+                </a>
+                <div class="nav-divider"></div>
+                <a href="/dev/index.html" class="nav-item">
+                    <span class="icon">🔧</span> Dev Hub
+                </a>
+                <a href="/index.html" class="nav-item">
+                    <span class="icon">🏠</span> Home
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h1>Business Metrics & KPIs</h1>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick="loadMetrics()">🔄 Refresh</button>
+                </div>
+            </header>
+
+            <!-- Revenue Metrics -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Revenue</h2>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3>Monthly Recurring Revenue</h3>
+                        <div class="metric-value" id="mrr">Loading...</div>
+                        <div class="metric-change" id="mrr-change">Loading...</div>
+                    </div>
+                    <div class="card">
+                        <h3>Total Revenue</h3>
+                        <div class="metric-value" id="total-revenue">Loading...</div>
+                    </div>
+                    <div class="card">
+                        <h3>Revenue Growth</h3>
+                        <div class="metric-value" id="revenue-growth">Loading...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- User Metrics -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Users</h2>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3>Total Users</h3>
+                        <div class="metric-value" id="total-users">Loading...</div>
+                    </div>
+                    <div class="card">
+                        <h3>Active Users</h3>
+                        <div class="metric-value" id="active-users">Loading...</div>
+                    </div>
+                    <div class="card">
+                        <h3>New Today</h3>
+                        <div class="metric-value" id="new-users">Loading...</div>
+                    </div>
+                    <div class="card">
+                        <h3>Churn Rate</h3>
+                        <div class="metric-value" id="churn-rate">Loading...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Task Metrics -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>AI Performance</h2>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3>Tasks Completed Today</h3>
+                        <div class="metric-value" id="tasks-today">Loading...</div>
+                    </div>
+                    <div class="card">
+                        <h3>Total Tasks</h3>
+                        <div class="metric-value" id="tasks-total">Loading...</div>
+                    </div>
+                    <div class="card">
+                        <h3>Success Rate</h3>
+                        <div class="metric-value" id="success-rate">Loading...</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+    <script>
+        async function loadMetrics() {
+            try {
+                const res = await fetch('/api/live/metrics');
+                const data = await res.json();
+                
+                // Revenue
+                document.getElementById('mrr').textContent = `$${data.revenue.mrr.toLocaleString()}`;
+                document.getElementById('mrr-change').textContent = `+${data.revenue.growth}%`;
+                document.getElementById('mrr-change').className = 'metric-change positive';
+                document.getElementById('total-revenue').textContent = `$${data.revenue.total.toLocaleString()}`;
+                document.getElementById('revenue-growth').textContent = `${data.revenue.growth}%`;
+                
+                // Users
+                document.getElementById('total-users').textContent = data.users.total.toLocaleString();
+                document.getElementById('active-users').textContent = data.users.active.toLocaleString();
+                document.getElementById('new-users').textContent = data.users.new_today.toLocaleString();
+                document.getElementById('churn-rate').textContent = `${data.users.churn_rate}%`;
+                
+                // AI Tasks
+                document.getElementById('tasks-today').textContent = data.ai_tasks.completed_today.toLocaleString();
+                document.getElementById('tasks-total').textContent = data.ai_tasks.total.toLocaleString();
+                document.getElementById('success-rate').textContent = `${data.ai_tasks.success_rate}%`;
+            } catch (error) {
+                console.error('Error loading metrics:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadMetrics);
+    </script>
+</body>
+</html>

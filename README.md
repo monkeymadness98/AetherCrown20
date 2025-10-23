@@ -5,9 +5,22 @@ A comprehensive automation platform for empire management with PayPal integratio
 ## Features
 
 - **Backend API**: FastAPI-based backend with uvicorn server
+- **Dev Hub**: Internal developer dashboard for monitoring, debugging, and system management
+  - API Documentation with interactive testing
+  - Build and deployment status tracking
+  - AI agent monitoring and control
+  - Database analytics and event logs
+  - Developer tools and one-click scripts
+- **Empire Live**: External dashboard for business metrics and user engagement
+  - Real-time business KPIs (revenue, users, AI tasks)
+  - Payment and subscription tracking
+  - Live AI activity feed
+  - Marketing content and social metrics
+  - Enterprise features and SLA monitoring
 - **Empire Automation**: One-shot automation script for empire management tasks
 - **Payment Integration**: PayPal client integration for payment processing
 - **Deployment Automation**: CI/CD pipelines for Render and Vercel deployments
+- **Monitoring**: Automated healthcheck system with 15-minute intervals
 
 ## Prerequisites
 
@@ -56,6 +69,24 @@ uvicorn backend.main:app --reload
 
 The API will be available at `http://localhost:8000`
 
+### Access the Dashboards
+
+Once the server is running, you can access:
+
+- **Dev Hub (Internal)**: `http://localhost:8000/dev/index.html`
+  - API Documentation: `/dev/api-docs.html`
+  - Build Logs: `/dev/logs.html`
+  - AI Agents: `/dev/ai-agents.html`
+  - Analytics: `/dev/analytics.html`
+  - Developer Tools: `/dev/tools.html`
+
+- **Empire Live (External)**: `http://localhost:8000/live/index.html`
+  - Business Metrics: `/live/metrics.html`
+  - Payments: `/live/payments.html`
+  - AI Activity Feed: `/live/ai-feed.html`
+  - Marketing: `/live/marketing.html`
+  - Enterprise Features: `/live/enterprise.html`
+
 ### Running Empire Automation
 
 The empire automation script can be run as a one-shot task:
@@ -71,6 +102,23 @@ python backend/empire_automation.py
 Once the server is running, visit:
 - Swagger UI: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
+- Dev Hub API Docs: `http://localhost:8000/dev/api-docs.html` (with interactive testing)
+
+### API Endpoints
+
+#### Dev Hub APIs
+- `GET /api/dev/status` - System status (backend, database, Redis)
+- `GET /api/dev/builds` - Recent builds and deployments
+- `GET /api/dev/ai-agents` - AI agent status and metrics
+- `GET /api/dev/analytics` - Database tables and events
+- `GET /api/dev/logs` - Application logs
+
+#### Live Dashboard APIs
+- `GET /api/live/metrics` - Business metrics (revenue, users, AI tasks)
+- `GET /api/live/payments` - Payment and subscription data
+- `GET /api/live/ai-activity` - Real-time AI activity feed
+- `GET /api/live/marketing` - Marketing content and social stats
+- `GET /api/live/enterprise` - Enterprise features and SLA
 
 ## Deployment
 
@@ -178,6 +226,23 @@ AetherCrown20/
 2. **Empire Automation**: Verify that `backend/empire_automation.py` is either:
    - A one-shot script that runs to completion, OR
    - Has proper locking mechanism to prevent concurrent execution issues
+
+## Developer Scripts
+
+The `scripts/` directory contains utility scripts for common development and operations tasks:
+
+```bash
+# Deploy to staging environment
+./scripts/deploy_staging.sh
+
+# Reset sandbox database
+./scripts/reset_sandbox_db.sh
+
+# Refresh analytics data
+./scripts/refresh_analytics.sh
+```
+
+**Note**: These scripts require appropriate environment variables to be set. See `.env.example` for required variables.
 
 ## Testing
 

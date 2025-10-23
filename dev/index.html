@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Hub - AetherCrown20</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>⚡ AetherCrown</h2>
+                <span class="badge dev">DEV HUB</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="/dev/index.html" class="nav-item active">
+                    <span class="icon">📊</span> Dashboard
+                </a>
+                <a href="/dev/api-docs.html" class="nav-item">
+                    <span class="icon">📚</span> API Docs
+                </a>
+                <a href="/dev/logs.html" class="nav-item">
+                    <span class="icon">📝</span> Logs
+                </a>
+                <a href="/dev/ai-agents.html" class="nav-item">
+                    <span class="icon">🤖</span> AI Agents
+                </a>
+                <a href="/dev/analytics.html" class="nav-item">
+                    <span class="icon">📈</span> Analytics
+                </a>
+                <a href="/dev/tools.html" class="nav-item">
+                    <span class="icon">🛠️</span> Tools
+                </a>
+                <div class="nav-divider"></div>
+                <a href="/live/index.html" class="nav-item">
+                    <span class="icon">🌐</span> Live Dashboard
+                </a>
+                <a href="/index.html" class="nav-item">
+                    <span class="icon">🏠</span> Home
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h1>Developer Dashboard</h1>
+                <div class="header-actions">
+                    <span class="status-indicator">
+                        <span class="status-dot online"></span>
+                        All Systems Operational
+                    </span>
+                </div>
+            </header>
+
+            <!-- Status Cards -->
+            <section class="cards-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Backend Status</h3>
+                        <span class="status-badge success">Healthy</span>
+                    </div>
+                    <div class="card-content" id="backend-status">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Database</h3>
+                        <span class="status-badge success" id="db-status-badge">Connected</span>
+                    </div>
+                    <div class="card-content" id="database-status">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Redis Cache</h3>
+                        <span class="status-badge info" id="redis-status-badge">Connected</span>
+                    </div>
+                    <div class="card-content" id="redis-status">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Builds -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Recent Builds</h2>
+                    <button class="btn-refresh" onclick="loadBuilds()">🔄 Refresh</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="builds-table">
+                        <thead>
+                            <tr>
+                                <th>Build ID</th>
+                                <th>Status</th>
+                                <th>Branch</th>
+                                <th>Commit</th>
+                                <th>Time</th>
+                                <th>Duration</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6" class="loading-row">Loading builds...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Recent Deployments -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Recent Deployments</h2>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="deployments-table">
+                        <thead>
+                            <tr>
+                                <th>Deploy ID</th>
+                                <th>Service</th>
+                                <th>Status</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="loading-row">Loading deployments...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+    <script>
+        // Load dev hub specific data
+        async function loadDevDashboard() {
+            try {
+                // Load system status
+                const statusRes = await fetch('/api/dev/status');
+                const statusData = await statusRes.json();
+                
+                // Update backend status
+                document.getElementById('backend-status').innerHTML = `
+                    <div class="stat">
+                        <span class="stat-label">Uptime</span>
+                        <span class="stat-value">${statusData.backend.uptime}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Environment</span>
+                        <span class="stat-value">${statusData.backend.env}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Last Deploy</span>
+                        <span class="stat-value">${new Date(statusData.backend.last_deploy).toLocaleString()}</span>
+                    </div>
+                `;
+
+                // Update database status
+                document.getElementById('database-status').innerHTML = `
+                    <div class="stat">
+                        <span class="stat-label">Status</span>
+                        <span class="stat-value">${statusData.database.status}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Connections</span>
+                        <span class="stat-value">${statusData.database.connections}/${statusData.database.max_connections}</span>
+                    </div>
+                `;
+
+                // Update Redis status
+                document.getElementById('redis-status').innerHTML = `
+                    <div class="stat">
+                        <span class="stat-label">Status</span>
+                        <span class="stat-value">${statusData.redis.status}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Memory</span>
+                        <span class="stat-value">${statusData.redis.memory_used}</span>
+                    </div>
+                `;
+
+                // Load builds
+                await loadBuilds();
+            } catch (error) {
+                console.error('Error loading dev dashboard:', error);
+            }
+        }
+
+        async function loadBuilds() {
+            try {
+                const buildsRes = await fetch('/api/dev/builds');
+                const buildsData = await buildsRes.json();
+                
+                // Update builds table
+                const buildsTable = document.getElementById('builds-table').querySelector('tbody');
+                buildsTable.innerHTML = buildsData.builds.map(build => `
+                    <tr>
+                        <td><code>${build.id}</code></td>
+                        <td><span class="status-badge ${build.status}">${build.status}</span></td>
+                        <td>${build.branch}</td>
+                        <td><code>${build.commit}</code></td>
+                        <td>${new Date(build.timestamp).toLocaleString()}</td>
+                        <td>${build.duration}</td>
+                    </tr>
+                `).join('');
+
+                // Update deployments table
+                const deploymentsTable = document.getElementById('deployments-table').querySelector('tbody');
+                deploymentsTable.innerHTML = buildsData.deployments.map(deploy => `
+                    <tr>
+                        <td><code>${deploy.id}</code></td>
+                        <td>${deploy.service}</td>
+                        <td><span class="status-badge ${deploy.status}">${deploy.status}</span></td>
+                        <td>${new Date(deploy.timestamp).toLocaleString()}</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading builds:', error);
+            }
+        }
+
+        // Load dashboard on page load
+        document.addEventListener('DOMContentLoaded', loadDevDashboard);
+    </script>
+</body>
+</html>

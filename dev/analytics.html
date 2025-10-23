@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Dev Hub</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>⚡ AetherCrown</h2>
+                <span class="badge dev">DEV HUB</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="/dev/index.html" class="nav-item">
+                    <span class="icon">📊</span> Dashboard
+                </a>
+                <a href="/dev/api-docs.html" class="nav-item">
+                    <span class="icon">📚</span> API Docs
+                </a>
+                <a href="/dev/logs.html" class="nav-item">
+                    <span class="icon">📝</span> Logs
+                </a>
+                <a href="/dev/ai-agents.html" class="nav-item">
+                    <span class="icon">🤖</span> AI Agents
+                </a>
+                <a href="/dev/analytics.html" class="nav-item active">
+                    <span class="icon">📈</span> Analytics
+                </a>
+                <a href="/dev/tools.html" class="nav-item">
+                    <span class="icon">🛠️</span> Tools
+                </a>
+                <div class="nav-divider"></div>
+                <a href="/live/index.html" class="nav-item">
+                    <span class="icon">🌐</span> Live Dashboard
+                </a>
+                <a href="/index.html" class="nav-item">
+                    <span class="icon">🏠</span> Home
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h1>Database & Analytics</h1>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick="loadAnalytics()">🔄 Refresh</button>
+                </div>
+            </header>
+
+            <!-- Database Tables -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Database Tables</h2>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="tables-table">
+                        <thead>
+                            <tr>
+                                <th>Table Name</th>
+                                <th>Rows</th>
+                                <th>Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="3" class="loading-row">Loading tables...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Recent Events -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Recent Events</h2>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="events-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Timestamp</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="loading-row">Loading events...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+    <script>
+        async function loadAnalytics() {
+            try {
+                const res = await fetch('/api/dev/analytics');
+                const data = await res.json();
+                
+                // Update tables
+                const tablesTable = document.getElementById('tables-table').querySelector('tbody');
+                tablesTable.innerHTML = data.tables.map(table => `
+                    <tr>
+                        <td><code>${table.name}</code></td>
+                        <td>${table.rows.toLocaleString()}</td>
+                        <td>${table.size}</td>
+                    </tr>
+                `).join('');
+
+                // Update events
+                const eventsTable = document.getElementById('events-table').querySelector('tbody');
+                eventsTable.innerHTML = data.recent_events.map(event => `
+                    <tr>
+                        <td>${event.id}</td>
+                        <td><span class="badge">${event.type}</span></td>
+                        <td>${new Date(event.timestamp).toLocaleString()}</td>
+                        <td>${JSON.stringify(event).substring(0, 50)}...</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAnalytics);
+    </script>
+</body>
+</html>

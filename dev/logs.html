@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs - Dev Hub</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>⚡ AetherCrown</h2>
+                <span class="badge dev">DEV HUB</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="/dev/index.html" class="nav-item">
+                    <span class="icon">📊</span> Dashboard
+                </a>
+                <a href="/dev/api-docs.html" class="nav-item">
+                    <span class="icon">📚</span> API Docs
+                </a>
+                <a href="/dev/logs.html" class="nav-item active">
+                    <span class="icon">📝</span> Logs
+                </a>
+                <a href="/dev/ai-agents.html" class="nav-item">
+                    <span class="icon">🤖</span> AI Agents
+                </a>
+                <a href="/dev/analytics.html" class="nav-item">
+                    <span class="icon">📈</span> Analytics
+                </a>
+                <a href="/dev/tools.html" class="nav-item">
+                    <span class="icon">🛠️</span> Tools
+                </a>
+                <div class="nav-divider"></div>
+                <a href="/live/index.html" class="nav-item">
+                    <span class="icon">🌐</span> Live Dashboard
+                </a>
+                <a href="/index.html" class="nav-item">
+                    <span class="icon">🏠</span> Home
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h1>Application Logs</h1>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick="loadLogs()">🔄 Refresh</button>
+                    <button class="btn-secondary" onclick="clearLogs()">🗑️ Clear</button>
+                </div>
+            </header>
+
+            <!-- Log Filters -->
+            <section class="filters">
+                <button class="filter-btn active" data-level="all">All</button>
+                <button class="filter-btn" data-level="INFO">Info</button>
+                <button class="filter-btn" data-level="WARN">Warning</button>
+                <button class="filter-btn" data-level="ERROR">Error</button>
+            </section>
+
+            <!-- Logs Display -->
+            <section class="section">
+                <div class="logs-container" id="logs-container">
+                    <div class="loading">Loading logs...</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+    <script>
+        async function loadLogs() {
+            try {
+                const res = await fetch('/api/dev/logs');
+                const data = await res.json();
+                
+                const logsContainer = document.getElementById('logs-container');
+                logsContainer.innerHTML = data.logs.map(log => `
+                    <div class="log-entry log-${log.level.toLowerCase()}">
+                        <span class="log-timestamp">${new Date(log.timestamp).toLocaleString()}</span>
+                        <span class="log-level ${log.level.toLowerCase()}">${log.level}</span>
+                        <span class="log-service">[${log.service}]</span>
+                        <span class="log-message">${log.message}</span>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading logs:', error);
+            }
+        }
+
+        function clearLogs() {
+            document.getElementById('logs-container').innerHTML = '<div class="log-entry">Logs cleared</div>';
+        }
+
+        document.addEventListener('DOMContentLoaded', loadLogs);
+    </script>
+</body>
+</html>

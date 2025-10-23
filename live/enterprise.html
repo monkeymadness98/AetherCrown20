@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise - Empire Live</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>⚡ AetherCrown</h2>
+                <span class="badge live">LIVE</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="/live/index.html" class="nav-item">
+                    <span class="icon">📊</span> Dashboard
+                </a>
+                <a href="/live/metrics.html" class="nav-item">
+                    <span class="icon">📈</span> Metrics
+                </a>
+                <a href="/live/payments.html" class="nav-item">
+                    <span class="icon">💳</span> Payments
+                </a>
+                <a href="/live/ai-feed.html" class="nav-item">
+                    <span class="icon">🤖</span> AI Activity
+                </a>
+                <a href="/live/marketing.html" class="nav-item">
+                    <span class="icon">📢</span> Marketing
+                </a>
+                <a href="/live/enterprise.html" class="nav-item active">
+                    <span class="icon">⭐</span> Enterprise
+                </a>
+                <div class="nav-divider"></div>
+                <a href="/dev/index.html" class="nav-item">
+                    <span class="icon">🔧</span> Dev Hub
+                </a>
+                <a href="/index.html" class="nav-item">
+                    <span class="icon">🏠</span> Home
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h1>Enterprise Features</h1>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick="loadEnterprise()">🔄 Refresh</button>
+                </div>
+            </header>
+
+            <!-- SLA Performance -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>SLA Performance</h2>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3>Uptime SLA</h3>
+                        <div class="metric-value" id="uptime-sla">Loading...</div>
+                    </div>
+                    <div class="card">
+                        <h3>Avg Response Time</h3>
+                        <div class="metric-value" id="response-time">Loading...</div>
+                    </div>
+                    <div class="card">
+                        <h3>Support Response</h3>
+                        <div class="metric-value" id="support-response">Loading...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enterprise Features -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Available Features</h2>
+                </div>
+                <div id="features-container" class="features-grid">
+                    <div class="loading">Loading features...</div>
+                </div>
+            </section>
+
+            <!-- Onboarding Progress -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Onboarding Progress</h2>
+                </div>
+                <div class="card">
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="onboarding-progress" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span id="progress-label">Loading...</span>
+                        </div>
+                        <div class="next-step" id="next-step">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+    <script>
+        async function loadEnterprise() {
+            try {
+                const res = await fetch('/api/live/enterprise');
+                const data = await res.json();
+                
+                // Update SLA metrics
+                document.getElementById('uptime-sla').textContent = `${data.performance.uptime}%`;
+                document.getElementById('response-time').textContent = data.performance.avg_response_time;
+                document.getElementById('support-response').textContent = data.performance.support_response;
+                
+                // Update features
+                document.getElementById('features-container').innerHTML = data.features.map(feature => `
+                    <div class="card feature-card">
+                        <div class="feature-header">
+                            <h3>${feature.name}</h3>
+                            <span class="status-badge ${feature.status}">${feature.status}</span>
+                        </div>
+                        <div class="feature-sla">
+                            SLA: ${feature.sla}
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Update onboarding
+                const progress = (data.onboarding.steps_completed / data.onboarding.steps_total) * 100;
+                document.getElementById('onboarding-progress').style.width = `${progress}%`;
+                document.getElementById('progress-label').textContent = 
+                    `${data.onboarding.steps_completed} of ${data.onboarding.steps_total} steps completed`;
+                document.getElementById('next-step').textContent = 
+                    `Next: ${data.onboarding.next_step}`;
+            } catch (error) {
+                console.error('Error loading enterprise:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadEnterprise);
+    </script>
+</body>
+</html>
