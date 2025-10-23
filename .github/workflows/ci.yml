@@ -152,12 +152,32 @@ jobs:
       - name: Wait for deployment
         run: |
           echo "Waiting for Render deployment to complete..."
-          sleep 30
+          sleep 60
+      
+      - name: Verify backend health check
+        run: |
+          echo "Verifying backend deployment..."
+          max_attempts=10
+          attempt=0
+          while [ $attempt -lt $max_attempts ]; do
+            if curl -f -s https://aethercrown98-backend.onrender.com/healthz; then
+              echo "✅ Backend health check passed!"
+              exit 0
+            fi
+            attempt=$((attempt + 1))
+            echo "Attempt $attempt/$max_attempts failed, waiting 10 seconds..."
+            sleep 10
+          done
+          echo "❌ Backend health check failed after $max_attempts attempts"
+          echo "Check Render dashboard logs for details"
+          exit 1
+        continue-on-error: true
       
       - name: Verify deployment
         run: |
           echo "Deployment triggered successfully"
-          echo "Check Render dashboard for deployment status"
+          echo "Backend URL: https://aethercrown98-backend.onrender.com"
+          echo "Health check endpoint: https://aethercrown98-backend.onrender.com/healthz"
 
   deploy-vercel:
     name: Deploy to Vercel
@@ -182,21 +202,36 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN || true
+        run: |
+          if [ -d "frontend" ]; then
+            cd frontend && vercel pull --yes --environment=production --token=$VERCEL_TOKEN || true
+          else
+            vercel pull --yes --environment=production --token=$VERCEL_TOKEN || true
+          fi
       
       - name: Build Project Artifacts
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: vercel build --prod --token=$VERCEL_TOKEN || true
+        run: |
+          if [ -d "frontend" ]; then
+            cd frontend && vercel build --prod --token=$VERCEL_TOKEN || true
+          else
+            vercel build --prod --token=$VERCEL_TOKEN || true
+          fi
       
       - name: Deploy to Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN || true
+        run: |
+          if [ -d "frontend" ]; then
+            cd frontend && vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN || true
+          else
+            vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN || true
+          fi
 
   notify:
     name: Deployment Notification
@@ -207,5 +242,16 @@ jobs:
     steps:
       - name: Notify deployment status
         run: |
-          echo "Deployment pipeline completed"
-          echo "Check individual job results for status"
+          echo "================================================"
+          echo "🚀 Deployment Pipeline Completed"
+          echo "================================================"
+          echo "Backend: https://aethercrown98-backend.onrender.com"
+          echo "Health Check: https://aethercrown98-backend.onrender.com/healthz"
+          echo ""
+          echo "📊 Verification Steps:"
+          echo "1. Backend /healthz → Should return 200 OK"
+          echo "2. Frontend loads → Should call backend successfully"
+          echo "3. Check logs for missing env vars or errors"
+          echo ""
+          echo "Check individual job results for detailed status"
+          echo "================================================"
