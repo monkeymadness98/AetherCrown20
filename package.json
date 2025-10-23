@@ -8,6 +8,7 @@
     "sweep": "node ai-agent-sweep.js",
     "sweep:dev": "ENVIRONMENT=development node ai-agent-sweep.js",
     "sweep:prod": "ENVIRONMENT=production node ai-agent-sweep.js",
+    "sweep:demo": "node scripts/demo-sweep.js",
     "health-check": "node scripts/health-check.js",
     "verify-env": "node scripts/verify-env.js",
     "deploy:backend": "node scripts/deploy-backend.js",
