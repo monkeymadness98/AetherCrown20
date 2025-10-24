@@ -8,6 +8,7 @@ A comprehensive automation platform for empire management with PayPal integratio
 - **Empire Automation**: One-shot automation script for empire management tasks
 - **Payment Integration**: PayPal client integration for payment processing
 - **Deployment Automation**: CI/CD pipelines for Render and Vercel deployments
+- **AI Agent Sweep & Auto-Fix**: Comprehensive health monitoring and auto-repair system
 
 ## Prerequisites
 
@@ -179,10 +180,46 @@ AetherCrown20/
    - A one-shot script that runs to completion, OR
    - Has proper locking mechanism to prevent concurrent execution issues
 
+## AI Agent Sweep & Auto-Fix
+
+The repository includes a comprehensive sweep and auto-fix system for monitoring and maintaining the deployment.
+
+### Quick Start
+
+Run a system sweep:
+
+```bash
+python backend/sweep_cli.py
+```
+
+With auto-fix enabled:
+
+```bash
+python backend/sweep_cli.py --auto-fix
+```
+
+### Features
+
+1. **Deployment & Connectivity**: Checks Render backend, Vercel frontend, and health endpoints
+2. **Environment Variables**: Validates all required configurations
+3. **Dependencies**: Detects version conflicts and outdated packages
+4. **AI Agent Tasks**: Monitors running agents and removes stale locks
+5. **Database & Services**: Validates database and payment integrations
+6. **Frontend UI**: Tests routes and component rendering
+7. **Comprehensive Reporting**: Generates detailed markdown or JSON reports
+
+### API Endpoints
+
+- `GET /sweep/status` - Quick status check
+- `POST /sweep/run?auto_fix=false` - Run full sweep
+- `GET /sweep/report?format=json` - Get latest report
+
+For detailed documentation, see [docs/SWEEP_GUIDE.md](docs/SWEEP_GUIDE.md)
+
 ## Testing
 
 ```bash
-pytest
+pytest tests/test_sweep.py -v
 ```
 
 ## License
