@@ -129,7 +129,61 @@ The Todo application will load with all its features including:
 
 ### Render Deployment
 
-The backend application is configured for automatic deployment to Render via GitHub Actions.
+The backend application is configured for automatic deployment to Render.
+
+#### Deployment Methods
+
+**Option 1: Using render.yaml (Recommended)**
+
+1. Connect your GitHub repository to Render:
+   - Go to [Render Dashboard](https://dashboard.render.com/)
+   - Click "New +" and select "Blueprint"
+   - Connect your GitHub account and select the `monkeymadness98/AetherCrown20` repository
+   - Render will automatically detect the `render.yaml` file and create the service
+
+2. Configure environment variables in Render Dashboard:
+   - Navigate to your service settings
+   - Add the following environment variables:
+     - `ENV`: `production`
+     - `PAYPAL_CLIENT_ID`: Your PayPal client ID
+     - `PAYPAL_SECRET`: Your PayPal secret key
+     - `DATABASE_URL`: Your database connection string (if using a database)
+
+3. Deploy:
+   - Render will automatically build and deploy your application
+   - The service will be available at the provided Render URL
+
+**Option 2: Manual Setup**
+
+1. Create a new Web Service on Render
+2. Configure the following settings:
+   - **Environment**: Python 3
+   - **Build Command**: `./build.sh`
+   - **Start Command**: `cd backend && gunicorn -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:$PORT --workers 2 --log-level info`
+   - **Plan**: Free (or choose your preferred plan)
+3. Add environment variables as listed above
+
+**Option 3: Using GitHub Actions (Automated CI/CD)**
+
+The repository includes a GitHub Actions workflow that automatically deploys to Render on push to the main branch. To enable:
+
+1. Add the following secrets to your GitHub repository:
+   - `RENDER_API_KEY`: Your Render API key
+   - `RENDER_SERVICE_ID`: Your Render service ID
+2. Push to the main branch, and the deployment will trigger automatically
+
+#### Health Check
+
+Once deployed, verify your service is running by accessing:
+- Health endpoint: `https://your-app.onrender.com/healthz`
+- Clock endpoint: `https://your-app.onrender.com/clocks`
+
+#### Troubleshooting
+
+- **Build failures**: Check that all dependencies in `requirements.txt` are compatible
+- **Start command issues**: Ensure gunicorn and uvicorn workers are properly installed
+- **Port binding**: Render automatically sets the `$PORT` environment variable; ensure your app uses it
+- **Environment variables**: Verify all required environment variables are set in Render Dashboard
 
 ### Vercel Deployment
 
