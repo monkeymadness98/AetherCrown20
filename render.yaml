@@ -6,9 +6,8 @@ services:
     plan: free
     repo: https://github.com/monkeymadness98/AetherCrown20
     region: oregon
-    rootDir: backend
-    buildCommand: pip install -r ../requirements.txt
-    startCommand: gunicorn -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:$PORT --workers 2 --log-level info
+    buildCommand: ./build.sh
+    startCommand: cd backend && gunicorn -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:$PORT --workers 2 --log-level info
     autoDeploy: true
     envVars:
       - key: ENV
