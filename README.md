@@ -1,5 +1,7 @@
 # AetherCrown20
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
 A comprehensive automation platform for empire management with PayPal integration and deployment automation.
 
 ## Features
