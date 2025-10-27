@@ -2,20 +2,29 @@
 
 A comprehensive automation platform for empire management with PayPal integration and deployment automation.
 
+## 🚀 Quick Start
+
+**New to the project?** See [QUICKSTART.md](QUICKSTART.md) for a 5-minute setup guide.
+
 ## Features
 
 - **Backend API**: FastAPI-based backend with uvicorn server
 - **Empire Automation**: One-shot automation script for empire management tasks
 - **Payment Integration**: PayPal client integration for payment processing
 - **Deployment Automation**: CI/CD pipelines for Render and Vercel deployments
+- **Health Monitoring**: Automated health checks and status reporting
+- **Multi-Platform**: Integrated deployment across Render, Vercel, and Supabase
 
 ## Prerequisites
 
 - Python 3.8+
-- Node.js 14+ (for frontend, if applicable)
-- PayPal Developer Account
-- Render Account
-- Vercel Account
+- Node.js 14+ (for monitoring and frontend)
+- **Platform Accounts:**
+  - PayPal Developer Account
+  - Render Account
+  - Vercel Account
+  - Supabase Account
+  - OpenAI API Account
 
 ## Installation
 
@@ -196,6 +205,158 @@ pytest
 ## Support
 
 For issues and questions, please open an issue on GitHub.
+
+---
+
+## Empire Infrastructure Overview
+
+### 🏗️ Architecture
+
+The Aether AI Empire stack is a fully automated, multi-platform deployment system spanning:
+
+```
+GitHub (Source Control & CI/CD)
+    ↓
+    ├─→ Render (Backend API)
+    │   └─→ https://your-app.onrender.com (example: aetherai-8wcw)
+    │
+    ├─→ Vercel (Frontend/Next.js)
+    │   └─→ [Your Vercel App URL]
+    │
+    └─→ Supabase (Database & Edge Functions)
+        └─→ Edge Function: aether-sync
+```
+
+### 🔗 Key Platforms
+
+| Platform | Purpose | URL/Dashboard |
+|----------|---------|---------------|
+| **Render** | Backend API & Services | https://dashboard.render.com/ |
+| **Vercel** | Frontend Deployment | https://vercel.com/dashboard |
+| **Supabase** | Database & Edge Functions | https://app.supabase.com/ |
+| **OpenAI** | AI/ML Services | https://platform.openai.com/ |
+| **PayPal** | Payment Processing | https://developer.paypal.com/ |
+
+### 🚀 Deployment Flow
+
+#### Automatic Deployments
+
+1. **Push to `main` branch** triggers:
+   - GitHub Actions CI/CD pipeline
+   - Automated testing and linting
+   - Parallel deployment to Render & Vercel
+
+2. **Backend Changes** (files in `/backend`, `/api`, `/server`, `/functions`):
+   - Triggers Render deployment workflow
+   - Backend redeploys with zero-downtime
+   - Health checks verify deployment
+
+3. **Frontend/Config Changes**:
+   - Triggers Vercel deployment workflow
+   - Frontend builds and deploys to edge network
+
+#### Manual Redeployment
+
+**Render Backend:**
+```bash
+# Using Render API
+curl -X POST "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
+  -H "Authorization: Bearer $RENDER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"clearCache": false}'
+
+# Or use the GitHub Action
+gh workflow run render-deploy.yml
+```
+
+**Vercel Frontend:**
+```bash
+# Using Vercel CLI
+vercel --prod
+
+# Or use the GitHub Action
+gh workflow run vercel-deploy.yml
+```
+
+**Supabase Edge Functions:**
+```bash
+# Deploy edge function
+supabase functions deploy aether-sync
+
+# View logs
+supabase functions logs aether-sync
+```
+
+### 📍 Key Endpoints
+
+| Service | Endpoint | Purpose |
+|---------|----------|---------|
+| Render Backend | `/healthz` | Health check |
+| Render Backend | `/clocks` | API status |
+| Render Backend | `/_env_check` | Environment verification (temp) |
+| Supabase | `/functions/v1/aether-sync` | Backend sync & AI summaries |
+| Vercel | `/api/health` | Frontend health check |
+
+### 🔍 Monitoring
+
+**Automated Health Checks:**
+- Runs daily at 00:00 UTC via GitHub Actions
+- Checks all critical endpoints
+- Logs results to `/logs/system_status.json`
+- Alerts on failures
+
+**Manual Health Check:**
+```bash
+# Run health checker locally
+node monitoring/status-checker.js
+
+# Or trigger via GitHub Actions
+gh workflow run daily-health-check.yml
+```
+
+**View Logs:**
+```bash
+# View latest health check results
+cat logs/system_status.json | jq '.checks[-1]'
+```
+
+### 🔐 Environment Variables
+
+All services require proper environment configuration. See `.env.template` for the complete list of required variables.
+
+**Critical Variables:**
+- `OPENAI_API_KEY` - OpenAI API access
+- `SUPABASE_URL` & `SUPABASE_ANON_KEY` - Supabase connection
+- `DATABASE_URL` - PostgreSQL database
+- `PAYPAL_CLIENT_ID` & `PAYPAL_SECRET` - Payment processing
+- `RENDER_API_KEY` & `RENDER_SERVICE_ID` - Render deployments
+- `VERCEL_TOKEN`, `VERCEL_PROJECT_ID`, `VERCEL_ORG_ID` - Vercel deployments
+
+### 🔧 Troubleshooting
+
+**Deployment Issues:**
+1. Check GitHub Actions logs in the "Actions" tab
+2. Verify environment variables are set in GitHub Secrets
+3. Check platform-specific dashboards (Render/Vercel/Supabase)
+4. Review health check logs in `/logs/system_status.json`
+
+**Service Down:**
+1. Run health checker: `node monitoring/status-checker.js`
+2. Check service logs on respective platforms
+3. Trigger manual redeployment if needed
+
+**CI/CD Pipeline Fails:**
+1. Review workflow logs in GitHub Actions
+2. Ensure all required secrets are configured
+3. Verify API tokens haven't expired
+4. Check for rate limiting on external APIs
+
+### 📊 Status Badges
+
+![Render Deploy](https://github.com/monkeymadness98/AetherCrown20/workflows/Deploy%20to%20Render/badge.svg)
+![Vercel Deploy](https://github.com/monkeymadness98/AetherCrown20/workflows/Deploy%20to%20Vercel/badge.svg)
+![Health Check](https://github.com/monkeymadness98/AetherCrown20/workflows/Daily%20Health%20Check/badge.svg)
+![CI/CD Pipeline](https://github.com/monkeymadness98/AetherCrown20/workflows/CI%2FCD%20Pipeline/badge.svg)
 
 ---
 

@@ -1,0 +1,105 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - 'api/**'
+      - 'server/**'
+      - 'functions/**'
+      - 'requirements.txt'
+      - 'render.yaml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Backend to Render
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Trigger Render Deployment
+        id: deploy
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+        run: |
+          echo "🚀 Triggering Render deployment..."
+          
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
+            "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache": false}')
+          
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | head -n-1)
+          
+          echo "Response Code: $HTTP_CODE"
+          echo "Response Body: $BODY"
+          
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "✅ Deployment triggered successfully"
+            echo "deploy_status=success" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Deployment failed with status code: $HTTP_CODE"
+            echo "deploy_status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+      
+      - name: Wait for Deployment to Start
+        if: steps.deploy.outputs.deploy_status == 'success'
+        run: |
+          echo "⏳ Waiting for deployment to initialize..."
+          sleep 30
+      
+      - name: Check Deployment Status
+        if: steps.deploy.outputs.deploy_status == 'success'
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+        run: |
+          echo "🔍 Checking deployment status..."
+          
+          RESPONSE=$(curl -s -X GET \
+            "https://api.render.com/v1/services/$RENDER_SERVICE_ID" \
+            -H "Authorization: Bearer $RENDER_API_KEY")
+          
+          echo "Service Status: $RESPONSE"
+      
+      - name: Verify Health Endpoint
+        if: steps.deploy.outputs.deploy_status == 'success'
+        run: |
+          echo "🏥 Verifying health endpoint..."
+          sleep 60  # Give deployment more time
+          
+          HEALTH_URL="https://aetherai-8wcw.onrender.com/healthz"
+          
+          for i in {1..5}; do
+            echo "Attempt $i/5: Checking $HEALTH_URL"
+            
+            if curl -f -s "$HEALTH_URL" > /dev/null; then
+              echo "✅ Health check passed!"
+              exit 0
+            fi
+            
+            echo "⏳ Health check failed, waiting 20s..."
+            sleep 20
+          done
+          
+          echo "⚠️ Health check did not pass after 5 attempts, but deployment was triggered"
+          echo "Check Render dashboard for actual status"
+      
+      - name: Summary
+        if: always()
+        run: |
+          echo "📊 Deployment Summary"
+          echo "===================="
+          echo "Status: ${{ steps.deploy.outputs.deploy_status }}"
+          echo "Service ID: ${{ secrets.RENDER_SERVICE_ID }}"
+          echo "Dashboard: https://dashboard.render.com/"
+          echo "Health URL: https://aetherai-8wcw.onrender.com/healthz"

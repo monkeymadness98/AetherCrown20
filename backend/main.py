@@ -42,12 +42,18 @@ from fastapi.responses import JSONResponse
 app = FastAPI(title="AetherCrown20 Backend", version="1.0")
 
 @app.get("/healthz")
+@app.get("/health")
 async def healthz():
     """
-    Health check endpoint for Render.
+    Health check endpoint for Render and monitoring.
     Keep response minimal and non-sensitive.
     """
-    return JSONResponse({"ok": True, "env": ENV})
+    return JSONResponse({
+        "ok": True,
+        "status": "healthy",
+        "env": ENV,
+        "service": "AetherCrown20-Backend"
+    })
 
 @app.get("/clocks")
 async def get_clock():
