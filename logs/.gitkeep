@@ -1,0 +1,2 @@
+# This directory is for system health check logs
+# Log files are ignored by .gitignore but this .gitkeep ensures the directory exists

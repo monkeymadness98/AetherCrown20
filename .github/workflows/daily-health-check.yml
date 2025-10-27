@@ -1,0 +1,71 @@
+name: Daily Health Check
+
+on:
+  schedule:
+    # Run daily at 00:00 UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  health-check:
+    name: Check Empire Services Health
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Make status checker executable
+        run: chmod +x monitoring/status-checker.js
+      
+      - name: Run Health Checks
+        id: health_check
+        env:
+          SUPABASE_FUNCTION_URL: ${{ secrets.SUPABASE_FUNCTION_URL }}
+          VERCEL_APP_URL: ${{ secrets.VERCEL_APP_URL }}
+        run: |
+          node monitoring/status-checker.js
+        continue-on-error: true
+      
+      - name: Upload Health Check Logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: health-check-logs
+          path: logs/system_status.json
+          retention-days: 30
+      
+      - name: Commit Updated Logs
+        if: always()
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          if [ -f logs/system_status.json ]; then
+            git add logs/system_status.json
+            git diff --staged --quiet || git commit -m "chore: update health check logs [skip ci]"
+            git push || echo "Nothing to push or push failed"
+          fi
+        continue-on-error: true
+      
+      - name: Notify on Failure
+        if: failure()
+        run: |
+          echo "⚠️ Health check detected issues!"
+          echo "Please review the health check logs for details"
+          echo "Dashboard: https://dashboard.render.com/"
+          echo "Vercel: https://vercel.com/dashboard"
+          echo "Supabase: https://app.supabase.com/"
+      
+      - name: Summary
+        if: always()
+        run: |
+          echo "📊 Health Check Summary"
+          echo "======================"
+          echo "Timestamp: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+          echo "Check the logs artifact for detailed results"
