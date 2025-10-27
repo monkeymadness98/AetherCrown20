@@ -17,6 +17,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Configuration
+// NOTE: Update the URLs below with your actual deployment URLs
 const CONFIG = {
   endpoints: [
     {

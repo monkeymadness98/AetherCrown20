@@ -48,9 +48,12 @@ node monitoring/status-checker.js
 
 ### Monitored Endpoints
 
+**Note:** Update URLs in `status-checker.js` CONFIG section with your actual deployment URLs.
+
 1. **Render Backend**
    - Health endpoint: `/healthz`
    - API endpoint: `/clocks`
+   - Example: `https://your-app.onrender.com/healthz`
 
 2. **Supabase Edge Function** (optional)
    - Edge Function: `/functions/v1/aether-sync`
@@ -72,7 +75,7 @@ Results are saved to `/logs/system_status.json` with the following structure:
       "results": [
         {
           "name": "Render Backend Health",
-          "url": "https://aetherai-8wcw.onrender.com/healthz",
+          "url": "https://your-app.onrender.com/healthz",
           "status": "healthy",
           "statusCode": 200,
           "responseTime": 150,

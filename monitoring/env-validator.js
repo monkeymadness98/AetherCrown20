@@ -28,7 +28,7 @@ const REQUIRED_VARS = {
   
   // Database
   database: [
-    { name: 'DATABASE_URL', platforms: ['GitHub Secrets', 'Render', 'Supabase'] }
+    { name: 'DATABASE_URL', platforms: ['GitHub Secrets', 'Render', 'Supabase Edge'] }
   ],
   
   // PayPal
@@ -228,7 +228,7 @@ function generateChecklist() {
   
   content += '\n## Verification Steps\n\n';
   content += '1. **Local Development**: Run `node monitoring/env-validator.js`\n';
-  content += '2. **Render**: Visit `https://aetherai-8wcw.onrender.com/_env_check`\n';
+  content += '2. **Render**: Visit `https://your-app.onrender.com/_env_check`\n';
   content += '3. **GitHub Actions**: Check workflow runs for errors\n';
   content += '4. **Vercel**: Check deployment logs\n';
   content += '5. **Supabase**: Test edge function invocation\n';

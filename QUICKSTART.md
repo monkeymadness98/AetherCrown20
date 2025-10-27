@@ -132,9 +132,9 @@ vercel --prod
 # Run status checker
 node monitoring/status-checker.js
 
-# Check specific endpoints
-curl https://aetherai-8wcw.onrender.com/health
-curl https://aetherai-8wcw.onrender.com/healthz
+# Check specific endpoints (replace with your actual Render URL)
+curl https://your-app.onrender.com/health
+curl https://your-app.onrender.com/healthz
 ```
 
 ### View Logs
@@ -209,8 +209,8 @@ grep "❌" ENV_CHECKLIST.md
 # Check all services
 node monitoring/status-checker.js
 
-# Check specific service
-curl -I https://aetherai-8wcw.onrender.com/health
+# Check specific service (replace with your Render URL)
+curl -I https://your-app.onrender.com/health
 ```
 
 ### CI/CD Pipeline Issues

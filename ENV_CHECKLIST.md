@@ -49,6 +49,7 @@ Use this checklist to ensure all environment variables are configured across all
 
 ### Supabase Edge
 
+- [ ] DATABASE_URL
 - [ ] SUPABASE_SERVICE_ROLE_KEY
 - [ ] SUPABASE_URL
 
@@ -63,7 +64,7 @@ Use this checklist to ensure all environment variables are configured across all
 ## Verification Steps
 
 1. **Local Development**: Run `node monitoring/env-validator.js`
-2. **Render**: Visit `https://aetherai-8wcw.onrender.com/_env_check`
+2. **Render**: Visit `https://your-app.onrender.com/_env_check`
 3. **GitHub Actions**: Check workflow runs for errors
 4. **Vercel**: Check deployment logs
 5. **Supabase**: Test edge function invocation

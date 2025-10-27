@@ -218,7 +218,7 @@ The Aether AI Empire stack is a fully automated, multi-platform deployment syste
 GitHub (Source Control & CI/CD)
     ↓
     ├─→ Render (Backend API)
-    │   └─→ https://aetherai-8wcw.onrender.com
+    │   └─→ https://your-app.onrender.com (example: aetherai-8wcw)
     │
     ├─→ Vercel (Frontend/Next.js)
     │   └─→ [Your Vercel App URL]
