@@ -2,20 +2,29 @@
 
 A comprehensive automation platform for empire management with PayPal integration and deployment automation.
 
+## 🚀 Quick Start
+
+**New to the project?** See [QUICKSTART.md](QUICKSTART.md) for a 5-minute setup guide.
+
 ## Features
 
 - **Backend API**: FastAPI-based backend with uvicorn server
 - **Empire Automation**: One-shot automation script for empire management tasks
 - **Payment Integration**: PayPal client integration for payment processing
 - **Deployment Automation**: CI/CD pipelines for Render and Vercel deployments
+- **Health Monitoring**: Automated health checks and status reporting
+- **Multi-Platform**: Integrated deployment across Render, Vercel, and Supabase
 
 ## Prerequisites
 
 - Python 3.8+
-- Node.js 14+ (for frontend, if applicable)
-- PayPal Developer Account
-- Render Account
-- Vercel Account
+- Node.js 14+ (for monitoring and frontend)
+- **Platform Accounts:**
+  - PayPal Developer Account
+  - Render Account
+  - Vercel Account
+  - Supabase Account
+  - OpenAI API Account
 
 ## Installation
 

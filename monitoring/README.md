@@ -2,6 +2,27 @@
 
 This directory contains monitoring tools for the Aether AI Empire infrastructure.
 
+## Environment Validator
+
+The `env-validator.js` script validates that all required environment variables are configured.
+
+### Usage
+
+```bash
+node monitoring/env-validator.js
+```
+
+This will:
+- Check which variables are set in your local environment
+- Generate a comprehensive checklist (`ENV_CHECKLIST.md`)
+- Provide platform-specific configuration guidance
+- List all required and optional variables
+
+### Output
+
+- Console report showing variable status
+- `ENV_CHECKLIST.md` - Generated checklist for tracking setup progress
+
 ## Status Checker
 
 The `status-checker.js` script monitors all critical services in the empire stack.
