@@ -1,26 +1,21 @@
+version: "1"
 services:
   - type: web
-    name: aethercrown-backend
+    name: aethercrown20-backend
     env: python
-    region: oregon
     plan: free
-    buildCommand: "pip install -r backend/requirements.txt"
-    startCommand: "uvicorn backend.main:app --host 0.0.0.0 --port $PORT"
-    healthCheckPath: "/health"
+    repo: https://github.com/monkeymadness98/AetherCrown20
+    region: oregon
+    rootDir: backend
+    buildCommand: pip install -r ../requirements.txt
+    startCommand: gunicorn -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:$PORT --workers 2 --log-level info
+    autoDeploy: true
     envVars:
-      - key: DATABASE_URL
-        value: ${DATABASE_URL}
+      - key: ENV
+        value: production
+      - key: PAYPAL_CLIENT_ID
+        sync: false
       - key: PAYPAL_SECRET
-        value: ${PAYPAL_SECRET}
-      - key: API_URL
-        value: ${API_URL}
-  - type: cron
-    name: aethercrown-automation
-    env: python
-    schedule: "0 */6 * * *" # every 6 hours
-    command: "python backend/empire_automation.py"
-    envVars:
+        sync: false
       - key: DATABASE_URL
-        value: ${DATABASE_URL}
-      - key: PAYPAL_SECRET
-        value: ${PAYPAL_SECRET}
+        sync: false

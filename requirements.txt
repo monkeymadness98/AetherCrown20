@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+gunicorn>=20.1.0
+python-dotenv
+-r backend/requirements.txt

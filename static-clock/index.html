@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Time Zone Clocks</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header class="header">
+      <h1>World Clocks</h1>
+      <div class="controls">
+        <label class="toggle">
+          <input id="hour-toggle" type="checkbox" />
+          <span>24-hour</span>
+        </label>
+        <div class="add">
+          <input id="tz-input" type="text" placeholder="Add IANA time zone (e.g. Europe/Paris)" />
+          <button id="add-btn">Add</button>
+        </div>
+        <select id="preset-select" title="Add preset zone">
+          <option value="">Add preset…</option>
+          <option value="UTC">UTC</option>
+          <option value="local">Local</option>
+          <option value="America/New_York">New York</option>
+          <option value="Europe/London">London</option>
+          <option value="Asia/Tokyo">Tokyo</option>
+          <option value="Australia/Sydney">Sydney</option>
+        </select>
+      </div>
+    </header>
+
+    <section id="clocks" class="clocks" aria-live="polite">
+      <!-- clocks inserted here -->
+    </section>
+
+    <footer class="footer">
+      <small>Times use the browser Intl API (IANA zones, DST-aware).</small>
+    </footer>
+  </main>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
