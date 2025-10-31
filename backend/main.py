@@ -38,8 +38,45 @@ logger.info("Starting backend; ENV=%s", ENV)
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="AetherCrown20 Backend", version="1.0")
+app = FastAPI(
+    title="AetherCrown20 Backend", 
+    version="1.0",
+    description="Autonomous optimization and decision-making platform"
+)
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Import and include routers
+try:
+    from backend.routers.optimization import router as optimization_router
+    from backend.routers.revenue import router as revenue_router
+    from backend.routers.dashboard import router as dashboard_router
+    from backend.routers.content import router as content_router
+    from backend.routers.enterprise import router as enterprise_router
+    from backend.routers.operational import router as operational_router
+    from backend.routers.multi_tenant import router as multi_tenant_router
+    from backend.routers.investor import router as investor_router
+    
+    app.include_router(optimization_router)
+    app.include_router(revenue_router)
+    app.include_router(dashboard_router)
+    app.include_router(content_router)
+    app.include_router(enterprise_router)
+    app.include_router(operational_router)
+    app.include_router(multi_tenant_router)
+    app.include_router(investor_router)
+    logger.info("All routers loaded successfully")
+except Exception as e:
+    logger.warning(f"Could not load some routers: {e}")
 
 @app.get("/healthz")
 @app.get("/health")
